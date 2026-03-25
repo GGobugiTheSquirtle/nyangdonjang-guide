@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>냥도장 가이드 - 아나더에덴</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #ffffff;
+            color: #37352f;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+        .app { max-width: 1080px; margin: 0 auto; padding: 0 24px 60px; }
+
+        /* Header */
+        .hdr {
+            padding: 60px 0 24px;
+            border-bottom: 1px solid #e3e3e1;
+            margin-bottom: 24px;
+        }
+        .hdr-icon { font-size: 48px; margin-bottom: 12px; }
+        .hdr h1 { font-size: 40px; font-weight: 700; color: #37352f; letter-spacing: -0.5px; }
+        .hdr .sub { color: #9b9a97; font-size: 14px; margin-top: 4px; }
+        .hdr .cr { color: #b4b4b0; font-size: 12px; margin-top: 12px; }
+
+        /* Search */
+        .search-wrap {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(255,255,255,.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 12px 0 8px;
+            border-bottom: 1px solid #f1f1ef;
+        }
+        .search-row {
+            display: flex; gap: 8px; align-items: center;
+        }
+        .search-box {
+            flex: 1;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 10px 14px 10px 38px;
+            background: #f7f6f3;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #37352f;
+            outline: none;
+            transition: all .15s;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%239b9a97' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242.156a5 5 0 1 1 0-10 5 5 0 0 1 0 10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: 12px center;
+        }
+        .search-box input:focus { border-color: #2eaadc; background-color: #fff; box-shadow: 0 0 0 3px rgba(46,170,220,.15); }
+        .search-box input::placeholder { color: #b4b4b0; }
+
+        /* View Toggle */
+        .view-toggle {
+            display: flex; gap: 2px;
+            background: #f1f1ef;
+            border-radius: 6px;
+            padding: 3px;
+            flex-shrink: 0;
+        }
+        .vbtn {
+            width: 36px; height: 34px;
+            border: none; background: transparent;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            color: #9b9a97;
+            transition: all .12s;
+        }
+        .vbtn:hover { color: #37352f; }
+        .vbtn.on { background: #fff; color: #37352f; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+        .vbtn svg { width: 18px; height: 18px; }
+
+        /* Filters */
+        .filters {
+            display: flex; flex-direction: column; gap: 6px;
+            padding: 10px 0 6px;
+        }
+        .filter-row {
+            display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
+        }
+        .filter-label {
+            font-size: 12px; color: #b4b4b0; font-weight: 500;
+            min-width: 48px; flex-shrink: 0;
+        }
+        .fbtn {
+            padding: 4px 12px;
+            border-radius: 4px;
+            border: none;
+            background: transparent;
+            color: #9b9a97;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all .12s;
+            font-family: inherit;
+        }
+        .fbtn:hover { background: #f1f1ef; color: #37352f; }
+        .fbtn.on { background: #37352f; color: #fff; }
+        .fbtn.on-ancient { background: #c77d3a; color: #fff; }
+        .fbtn.on-present { background: #4d9c6d; color: #fff; }
+        .fbtn.on-future { background: #437ea6; color: #fff; }
+        .fsep { color: #e3e3e1; font-size: 14px; padding: 0 2px; }
+        .result-count { font-size: 12px; color: #b4b4b0; padding: 2px 0 8px; }
+
+        /* Grid (Card View) */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+        }
+        @media(max-width:700px) { .grid { grid-template-columns: 1fr; } }
+
+        /* Card */
+        .card {
+            background: #fff;
+            border: 1px solid #e3e3e1;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: box-shadow .2s, transform .15s;
+        }
+        .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.08); transform: translateY(-1px); }
+        .card.hide { display: none; }
+
+        .card-imgs { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #f1f1ef; }
+        .card-imgs.single { grid-template-columns: 1fr; }
+        .card-imgs img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; }
+
+        .no-img {
+            padding: 32px 16px;
+            text-align: center;
+            color: #d3d1cb;
+            font-size: 13px;
+            background: #fafaf8;
+        }
+
+        .card-body { padding: 14px 16px 16px; }
+
+        .card-tags { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+        .tag {
+            font-size: 11px;
+            padding: 2px 7px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+        .tag-ancient { background: #fdecc8; color: #9f6b31; }
+        .tag-present { background: #dbeddb; color: #2b6e3f; }
+        .tag-future { background: #d3e5ef; color: #2e6b8a; }
+        .tag-mig { background: #f5e0d0; color: #9a5c34; }
+        .tag-gar { background: #d8f0e0; color: #347a4a; }
+        .tag-etc { background: #ebeced; color: #6b6f72; }
+
+        .card-loc {
+            font-size: 16px;
+            font-weight: 600;
+            color: #37352f;
+            margin-bottom: 4px;
+        }
+        .card-dial {
+            font-size: 13px;
+            color: #787774;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .card-author { font-size: 11px; color: #b4b4b0; margin-top: 8px; }
+
+        /* ===== List View ===== */
+        .grid.list-view {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+        .grid.list-view .card {
+            border-radius: 0;
+            border-bottom: none;
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+        }
+        .grid.list-view .card:first-child:not(.hide) { border-radius: 8px 8px 0 0; }
+        .grid.list-view .card:last-child { border-bottom: 1px solid #e3e3e1; }
+        .grid.list-view .card:last-child:not(.hide) { border-radius: 0 0 8px 8px; }
+        .grid.list-view .card.hide { display: none; }
+        .grid.list-view .card.hide { display: none; }
+        .grid.list-view .card:hover { transform: none; box-shadow: none; background: #fafaf8; }
+
+        .grid.list-view .card-imgs,
+        .grid.list-view .no-img { display: none; }
+
+        .grid.list-view .card-body {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            width: 100%;
+            min-height: 0;
+        }
+        .grid.list-view .card-tags {
+            margin-bottom: 0;
+            flex-shrink: 0;
+            min-width: 110px;
+        }
+        .grid.list-view .card-loc {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 0;
+            flex-shrink: 0;
+            min-width: 160px;
+        }
+        .grid.list-view .card-dial {
+            font-size: 13px;
+            color: #9b9a97;
+            display: block;
+            -webkit-line-clamp: unset;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex: 1;
+            min-width: 0;
+        }
+        .grid.list-view .card-author {
+            font-size: 11px;
+            margin-top: 0;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+        /* list-view에서 이미지 있음 표시 */
+        .list-img-dot {
+            display: none;
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #2eaadc;
+            flex-shrink: 0;
+            margin-right: -4px;
+        }
+        .grid.list-view .list-img-dot { display: block; }
+        .grid.list-view .list-img-dot.no { background: transparent; }
+
+        @media(max-width:700px) {
+            .grid.list-view .card-body {
+                flex-wrap: wrap; gap: 4px 8px;
+            }
+            .grid.list-view .card-loc { min-width: auto; }
+            .grid.list-view .card-dial { white-space: normal; -webkit-line-clamp: 1; display: -webkit-box; -webkit-box-orient: vertical; }
+        }
+
+        /* Modal */
+        .modal-bg {
+            display: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15,15,15,.6);
+            z-index: 200;
+            overflow-y: auto;
+        }
+        .modal-bg.open {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 48px 16px;
+        }
+        .modal {
+            background: #fff;
+            border-radius: 12px;
+            max-width: 720px;
+            width: 100%;
+            overflow: hidden;
+            box-shadow: 0 24px 64px rgba(0,0,0,.2);
+            animation: modalIn .2s ease;
+        }
+        @keyframes modalIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+        .modal-close {
+            position: fixed; top: 20px; right: 28px;
+            background: rgba(255,255,255,.9);
+            border: none;
+            color: #37352f;
+            font-size: 22px;
+            cursor: pointer;
+            z-index: 210;
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,.1);
+        }
+        .modal-close:hover { background: #f1f1ef; }
+
+        .modal-imgs { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #f1f1ef; }
+        .modal-imgs.single { grid-template-columns: 1fr; }
+        .modal-imgs img { width: 100%; cursor: pointer; display: block; }
+
+        .modal-body { padding: 24px 28px 28px; }
+        .modal-body .card-tags { margin-bottom: 12px; }
+        .modal-body .card-loc { font-size: 24px; font-weight: 700; margin-bottom: 10px; }
+        .modal-body .card-dial {
+            font-size: 15px;
+            color: #6b6b6b;
+            white-space: pre-line;
+            display: block;
+            -webkit-line-clamp: unset;
+            overflow: visible;
+            line-height: 1.7;
+        }
+        .modal-body .card-author { font-size: 13px; color: #b4b4b0; margin-top: 16px; }
+        .modal-link {
+            display: inline-block;
+            margin-top: 12px;
+            font-size: 12px;
+            color: #2eaadc;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .modal-link:hover { text-decoration: underline; }
+        .copied-toast {
+            display: inline-block;
+            margin-left: 8px;
+            font-size: 11px;
+            color: #4d9c6d;
+            opacity: 0;
+            transition: opacity .2s;
+        }
+        .copied-toast.show { opacity: 1; }
+
+        /* Lightbox */
+        .lb {
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,.88);
+            z-index: 300;
+            justify-content: center; align-items: center;
+            cursor: pointer;
+        }
+        .lb.on { display: flex; }
+        .lb img { max-width: 95%; max-height: 95%; border-radius: 4px; box-shadow: 0 8px 32px rgba(0,0,0,.4); }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d3d1cb; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #b4b4b0; }
+    </style>
+</head>
+<body>
+<div class="app">
+    <div class="hdr">
+        <div class="hdr-icon">🐱</div>
+        <h1>냥도장 가이드</h1>
+        <div class="sub">아나더에덴 냥도장 전체 위치 검색 가이드</div>
+        <div class="cr">- 이명진, 나무Actors, 덴기스, cheese1006, 범고래, 우어엌, 포도맛</div>
+    </div>
+
+    <div class="search-wrap">
+        <div class="search-row">
+            <div class="search-box">
+                <input type="text" id="q" placeholder="위치명, 대사, 시대로 검색..." oninput="doFilter()" />
+            </div>
+            <div class="view-toggle">
+                <button class="vbtn on" id="vCard" onclick="setView('card')" title="카드 보기">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                </button>
+                <button class="vbtn" id="vList" onclick="setView('list')" title="리스트 보기">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+            </div>
+        </div>
+        <div class="filters" id="filters">
+            <div class="filter-row">
+                <span class="filter-label">시간</span>
+                <button class="fbtn on" data-type="era" data-val="all" onclick="setF(this)">전체</button>
+                <button class="fbtn" data-type="era" data-val="고대" onclick="setF(this)">고대</button>
+                <button class="fbtn" data-type="era" data-val="현대" onclick="setF(this)">현대</button>
+                <button class="fbtn" data-type="era" data-val="미래" onclick="setF(this)">미래</button>
+            </div>
+            <div class="filter-row">
+                <span class="filter-label">대륙</span>
+                <button class="fbtn on" data-type="cont" data-val="all" onclick="setF(this)">전체</button>
+                <button class="fbtn" data-type="cont" data-val="미그레이나" onclick="setF(this)">미그레이나</button>
+                <button class="fbtn" data-type="cont" data-val="가를레아" onclick="setF(this)">가를레아</button>
+                <button class="fbtn" data-type="cont" data-val="기타" onclick="setF(this)">기타</button>
+            </div>
+        </div>
+        <div class="result-count" id="rcnt"></div>
+    </div>
+
+    <div class="grid" id="grid"></div>
+</div>
+
+<div class="modal-bg" id="modal" onclick="if(event.target===this)closeModal()">
+    <button class="modal-close" onclick="closeModal()">&#10005;</button>
+    <div class="modal" id="mc"></div>
+</div>
+<div class="lb" id="lb" onclick="this.classList.remove('on')"><img id="lbi" /></div>
+
+<script>
+const D=[
+// 고대 - 미그레이나
+{e:"고대",c:"미그레이나",l:"불의 마을 라틀",d:"역시 불의 마을......! 인간도 땅도 후끈거리는구냥!",i:["https://files.catbox.moe/9gy6e4.jpg","https://files.catbox.moe/ltkie3.jpg"],a:"우어엌"},
+{e:"고대",c:"미그레이나",l:"바슈 산악",d:"올라갈수록 더운 산",i:[],a:""},
+{e:"고대",c:"미그레이나",l:"나다라 화산 (분화구 앞)",d:"마그마가 부글부글",i:[],a:""},
+{e:"고대",c:"미그레이나",l:"졸 평원",d:"버섯, 도마뱀, 뭐든지 거대한 들판",i:[],a:""},
+{e:"고대",c:"미그레이나",l:"물의 도시 아크툴",d:"호수 위에 도시가 있다냥......! 조각배를 타고 우아하게 돌아다녀 보고 싶구냥.",i:["https://files.catbox.moe/yxdkwd.png","https://files.catbox.moe/7nvgaw.png"],a:"범고래"},
+{e:"고대",c:"미그레이나",l:"티렌 호수길",d:"호수 위에 돌로 된 길을 만들다니...... 품이 얼마나 들었을까냥?",i:["https://files.catbox.moe/9sle6v.jpg","https://files.catbox.moe/ur5073.jpg"],a:"우어엌"},
+{e:"고대",c:"미그레이나",l:"식인늪 (아크툴 진입)",d:"으스스한 늪에 책과 꽃병",i:[],a:""},
+{e:"고대",c:"미그레이나",l:"파르지팔 궁전",d:"꽃이 아름다운 궁전이구냥...... 꾹꾹이를 하면 혼날까냥?",i:["https://files.catbox.moe/3erj9r.PNG","https://files.catbox.moe/cvgju3.PNG"],a:"cheese1006"},
+{e:"고대",c:"미그레이나",l:"케루리 길",d:"길가에 늘어서 있는 촛대",i:[],a:""},
+{e:"고대",c:"미그레이나",l:"코린다 벌판",d:"빛나는 포자가 떠다니는, 아름다운 들판",i:[],a:""},
+{e:"고대",c:"미그레이나",l:"시간의 탑 (7층)",d:"음산한 시계",i:[],a:""},
+{e:"고대",c:"미그레이나",l:"별의 탑 (1층)",d:"탑의 벽이 닫혔다 열렸다",i:[],a:""},
+{e:"고대",c:"미그레이나",l:"초원의 마을 사르파",d:"둥근 문에 색색의 천...... 초원 변두리에 이런 멋진 마을이 다 있었구냥.",i:["https://files.catbox.moe/ygkuow.PNG","https://files.catbox.moe/3e8qr2.PNG"],a:"cheese1006"},
+{e:"고대",c:"미그레이나",l:"차롤 초원",d:"초원에 커다란 폭포",i:[],a:""},
+{e:"고대",c:"미그레이나",l:"연옥계",d:"어서 데리고 돌아와라냥! 살아 있는 자가 있을 곳이 아니다냥!",i:["https://files.catbox.moe/ta5as0.jpg","https://files.catbox.moe/52owx4.jpg"],a:"이명진"},
+// 고대 - 가를레아
+{e:"고대",c:"가를레아",l:"바다의 땅 자미",d:"짚단이 도처에...... 특이한 항구 도시로구냥...",i:["https://files.catbox.moe/a1thx9.jpg","https://files.catbox.moe/i8tlky.jpg"],a:"덴기스"},
+{e:"고대",c:"가를레아",l:"뱃묘지",d:"무척 오래된 배",i:[],a:""},
+{e:"고대",c:"가를레아",l:"용신 연못",d:"새가 날더니 길이 막혔다, 희한한 연못",i:[],a:""},
+{e:"고대",c:"가를레아",l:"지우굴 (지상층 입구)",d:"어두컴컴한 동굴, 무서운 토우",i:[],a:""},
+{e:"고대",c:"가를레아",l:"다르가나 산길",d:"산길에 있는 바위에 장식물",i:[],a:""},
+{e:"고대",c:"가를레아",l:"산의 땅 가다로",d:"산바람이 시원하고 바람개비가 돌아가는 소리에 마음이 포근해지는 곳이다냥~",i:["https://files.catbox.moe/ng9wct.PNG","https://files.catbox.moe/sul0r2.PNG"],a:"cheese1006"},
+{e:"고대",c:"가를레아",l:"호키시의 숲",d:"오색찬란한 숲, 맛있는 과일",i:[],a:""},
+{e:"고대",c:"가를레아",l:"고대수의 마을 파도르",d:"나무 위에 커다란 인간들이 잔뜩...... 스케일이 엄청난 마을이다냥.",i:["https://files.catbox.moe/lbr9dy.jpg","https://files.catbox.moe/sjklap.jpg"],a:"우어엌"},
+{e:"고대",c:"가를레아",l:"고목의 벌판",d:"커다란 나무 아래에 그림자",i:[],a:""},
+{e:"고대",c:"가를레아",l:"귀화 동굴 (지하 1층)",d:"동굴 안에 커다란 문",i:[],a:""},
+{e:"고대",c:"가를레아",l:"쿠루치 해안",d:"해안 너머에 부서져 가는 배",i:[],a:""},
+// 현대 - 미그레이나
+{e:"현대",c:"미그레이나",l:"바르오키",d:"한적한 마을에 이렇게 멋진 동상이 다 있구냥! 곁에 서면 마치 영웅의 파트너가 된 기분이겠구냥!",i:["https://files.catbox.moe/58wv6i.jpg","https://files.catbox.moe/7oc5ps.jpg"],a:"우어엌"},
+{e:"현대",c:"미그레이나",l:"누아르 평원",d:"상쾌한 들판이구냥~ 저 멀리 보이는건 성일까냥?",i:["https://files.catbox.moe/716sfm.jpg","https://files.catbox.moe/murpky.jpg"],a:"우어엌"},
+{e:"현대",c:"미그레이나",l:"달그림자 숲 (안쪽 쉼터)",d:"연못에 비친 둥근 달",i:[],a:""},
+{e:"현대",c:"미그레이나",l:"카레크 습지",d:"보라색 괴물, 습지",i:[],a:""},
+{e:"현대",c:"미그레이나",l:"왕도 유니건",d:"역시 왕도라서 화려하구냥! 성 앞에 늘어선 꽃들도 멋지다냥!",i:["https://files.catbox.moe/kn79pq.png","https://files.catbox.moe/4hczp2.png"],a:"덴기스"},
+{e:"현대",c:"미그레이나",l:"미글랜스 성 2층",d:"멋진 성이 이런 꼴이 되다니... 싸움은 어리석은 짓이다냥...",i:["https://files.catbox.moe/8eof97.png","https://files.catbox.moe/5dxnvk.png"],a:"나무Actors"},
+{e:"현대",c:"미그레이나",l:"마수성 (옥좌)",d:"스테인드글라스, 성의 옥좌",i:[],a:""},
+{e:"현대",c:"미그레이나",l:"자르보",d:"모래 먼지 때문에 눈을 감고 싶지만...... 뱅글뱅글 도는 풍차에서 눈을 못 떼겠다냥!",i:["https://files.catbox.moe/m82u4a.jpg","https://files.catbox.moe/vxno8r.jpg"],a:"이명진"},
+{e:"현대",c:"미그레이나",l:"루차나 사막",d:"끝없이 흐르는 모래",i:[],a:""},
+{e:"현대",c:"미그레이나",l:"고대 전쟁 유적",d:"전쟁, 헤매는 강자들의 영혼",i:[],a:""},
+{e:"현대",c:"미그레이나",l:"뱀뼈섬 - 코니움",d:"후훗...... 술래잡기에 어울리느라 녹초가 된 모양이구냥.",i:["https://files.catbox.moe/j44ffv.jpg","https://files.catbox.moe/3vmzp5.jpg"],a:"포도맛"},
+{e:"현대",c:"미그레이나",l:"뱀뼈섬 - 코니움 왼쪽",d:"뱀의 목에 바위 아치",i:[],a:""},
+{e:"현대",c:"미그레이나",l:"뱀뼈섬 - 뱀의 등 가바라기",d:"뱀의 등을 따라 멧돼지가 달려온다",i:[],a:""},
+{e:"현대",c:"미그레이나",l:"뱀뼈섬 - 뱀의 머리 메즈키터",d:"냐~! 노을이 참 멋지구냥!",i:["https://files.catbox.moe/v57gu6.jpg"],a:"이명진"},
+{e:"현대",c:"미그레이나",l:"뱀뼈섬 - 뱀의 간 다마크",d:"특이한 구슬, 풍경이 바뀌었다",i:[],a:""},
+// 현대 - 가를레아
+{e:"현대",c:"가를레아",l:"뱀의 땅 이자나",d:"번듯한 제등이다냥 해자를 보며 한숨 돌릴까냥?",i:["https://files.catbox.moe/bcyeel.png","https://files.catbox.moe/ruwi4r.png"],a:"나무Actors"},
+{e:"현대",c:"가를레아",l:"이나나리 고원",d:"바람에 흔들리는 너른 억새밭이 아름답구냥~!",i:["https://files.catbox.moe/6but2b.PNG","https://files.catbox.moe/fjctpe.PNG"],a:"cheese1006"},
+{e:"현대",c:"가를레아",l:"단풍 거리",d:"불타는 듯한 단풍, 낙엽",i:[],a:""},
+{e:"현대",c:"가를레아",l:"용의 땅 나그샴",d:"빛깔이 현란한 곳이다냥! 고양이 경주라니 흥미롭구냥!",i:["https://files.catbox.moe/p3tdm8.png","https://files.catbox.moe/rras43.png"],a:"나무Actors"},
+{e:"현대",c:"가를레아",l:"고양이 신사",d:"우리 고양이들에게 아늑해보이는 사당이로구냥......!",i:["https://files.catbox.moe/al39u5.jpg","https://files.catbox.moe/v8fk54.jpg"],a:"우어엌"},
+{e:"현대",c:"가를레아",l:"오니가하라",d:"들판을 걷고 있으려니 영화롭던 과거의 흔적",i:[],a:""},
+{e:"현대",c:"가를레아",l:"이카루가 마을",d:"마을 안에 맛있는 음식이 잔뜩.....! 풍작이로구냥....!",i:["https://files.catbox.moe/7kw16i.jpg","https://files.catbox.moe/oyrf1f.jpg"],a:"덴기스"},
+{e:"현대",c:"가를레아",l:"온천",d:"극락, 물이 뜨뜻하다",i:[],a:""},
+{e:"현대",c:"가를레아",l:"요마전 (1층)",d:"설산 위에 무척 근사한 저택",i:[],a:""},
+{e:"현대",c:"가를레아",l:"요마 황궁 (본전 1층)",d:"황궁 곳곳이 꽁꽁..... 이 얼음은 녹지 않는 것이냥?",i:["https://files.catbox.moe/6vkwc3.png","https://files.catbox.moe/pu6lad.png"],a:"덴기스"},
+{e:"현대",c:"가를레아",l:"숨어 사는 마을 이토이스",d:"이 마을은 너무 춥다냥! 어서 눈 움집 안으로 피난해야겠다냥!",i:["https://files.catbox.moe/hb8lsw.PNG","https://files.catbox.moe/v5gxwe.PNG"],a:"cheese1006"},
+{e:"현대",c:"가를레아",l:"쿤룬 산맥",d:"사방이 눈으로 덮여 절경",i:[],a:""},
+{e:"현대",c:"가를레아",l:"황폐한 절 (본당 앞)",d:"후줄근한 본당.... 오싹한 절이다냥....!",i:["https://files.catbox.moe/5drryi.jpg","https://files.catbox.moe/jctv61.jpg"],a:"포도맛"},
+{e:"현대",c:"가를레아",l:"박명의 섬",d:"냣?! 저 눈알 같은 건 도대체 뭐냥?! 참 이상한 섬이다냥......",i:["https://files.catbox.moe/hislrj.PNG","https://files.catbox.moe/68lf71.PNG"],a:"cheese1006"},
+// 미래 - 미그레이나
+{e:"미래",c:"미그레이나",l:"새벽빛의 도시 엘지온",d:"최첨단 도시로구냥! 이 시대에서는 어떤 물건을 팔고 있을까냥?",i:["https://files.catbox.moe/n4r24k.png","https://files.catbox.moe/b2dqtl.png"],a:"나무Actors"},
+{e:"미래",c:"미그레이나",l:"엘지온 에어포트",d:"철로 된 상자가 하늘에서 왔다갔다",i:[],a:""},
+{e:"미래",c:"미그레이나",l:"폐도 루트 99",d:"길 끝이 무너져",i:[],a:""},
+{e:"미래",c:"미그레이나",l:"공업도시폐허 (연결통로)",d:"을씨년스러운 폐허",i:[],a:""},
+{e:"미래",c:"미그레이나",l:"제노 도메인",d:"도시보다 훨씬 높은 곳, 연구",i:[],a:""},
+{e:"미래",c:"미그레이나",l:"토토 드림랜드 (호러 구역)",d:"쓸쓸한 유원지...... 북적거리던 시절에 와 봤다면 좋았겠구냥.",i:["https://files.catbox.moe/g5ztms.jpg","https://files.catbox.moe/84ij0u.jpg"],a:"우어엌"},
+{e:"미래",c:"미그레이나",l:"라울라 돔",d:"아름다운 황금빛으로 물든 보리밭이구냥! 숨바꼭질하면 즐거울 것 같다냥",i:["https://files.catbox.moe/9k23v4.jpg","https://files.catbox.moe/4u5rrw.jpg"],a:"덴기스"},
+{e:"미래",c:"미그레이나",l:"땅끝 섬",d:"온화하고 아름다운 해안...... 세상의 끝에 걸맞은 장소로구냥!",i:["https://files.catbox.moe/gw3ffe.PNG","https://files.catbox.moe/v1xgwl.PNG"],a:"cheese1006"},
+{e:"미래",c:"미그레이나",l:"닐바",d:"전망이 좋은 도시로구냥. 하늘에 뜬 커다란 나무가 잘 보인다냥.",i:["https://files.catbox.moe/8icxww.png","https://files.catbox.moe/b5ddqi.png"],a:"나무Actors"},
+{e:"미래",c:"미그레이나",l:"맥미널 박물관 도서실",d:"박물관 책이 잔뜩.....! 총명한 나에게 안성맞춤인 곳이다냥!",i:["https://files.catbox.moe/f9dnub.jpg","https://files.catbox.moe/moc9ym.jpg"],a:"덴기스"},
+// 미래 - 가를레아
+{e:"미래",c:"가를레아",l:"재생촌 앙가르",d:"이 시대에도 지상에서 사는 인간들의 마을이 다 있구냥......",i:["https://files.catbox.moe/0yvznn.jpg","https://files.catbox.moe/fucvem.jpg"],a:"이명진"},
+{e:"미래",c:"가를레아",l:"불모의 땅",d:"성한 곳이 없구냥, 공기도 탁하다",i:[],a:""},
+{e:"미래",c:"가를레아",l:"오염갱",d:"오염된 토지를 계속 밑으로... 그다지 편히 있을수 없는 곳이다냥...",i:["https://files.catbox.moe/0se6ym.jpg","https://files.catbox.moe/ohvhl7.jpg"],a:"덴기스"},
+{e:"미래",c:"가를레아",l:"고양이 신사 유적",d:"그 사당이 이꼴로 변하다니...... 세월은 참 잔인하구냥......",i:["https://files.catbox.moe/425cc3.jpg","https://files.catbox.moe/oi466x.jpg"],a:"이명진"},
+{e:"미래",c:"가를레아",l:"공중 성곽 이지아",d:"벤치에 앉아 공중에서 도시를 내려다볼수 있다니... 굉장한 기술이다냥....!",i:["https://files.catbox.moe/gvg71x.png","https://files.catbox.moe/5iscx6.png"],a:"덴기스"},
+{e:"미래",c:"가를레아",l:"새틀라이트 스타디움",d:"수많은 인간들의 열광이 전해지는...... 활기찬 스타디움이구냥!",i:["https://files.catbox.moe/iybi6u.PNG","https://files.catbox.moe/usxczg.PNG"],a:"cheese1006"},
+// 기타
+{e:"미래",c:"기타",l:"명협계 - 그림자의 도시 나즈리크",d:"우중충한 거리구냥... 빨갛고 파란 안개 같은건 대체 뭘까냥?",i:["https://files.catbox.moe/pjqdmk.jpg","https://files.catbox.moe/gdkv0h.jpg"],a:"덴기스"},
+];
+
+let fEra='all',fCont='all',curView='card';
+
+// --- View Toggle ---
+function setView(v){
+    curView=v;
+    const g=document.getElementById('grid');
+    if(v==='list'){g.classList.add('list-view');}else{g.classList.remove('list-view');}
+    document.getElementById('vCard').className=v==='card'?'vbtn on':'vbtn';
+    document.getElementById('vList').className=v==='list'?'vbtn on':'vbtn';
+}
+
+// --- Filters ---
+function setF(btn){
+    const t=btn.dataset.type, v=btn.dataset.val;
+    if(t==='era'){fEra=v;document.querySelectorAll('[data-type=era]').forEach(b=>b.className='fbtn');btn.className=v==='all'?'fbtn on':v==='고대'?'fbtn on-ancient':v==='현대'?'fbtn on-present':'fbtn on-future';}
+    if(t==='cont'){fCont=v;document.querySelectorAll('[data-type=cont]').forEach(b=>b.className='fbtn');btn.className='fbtn on';}
+    doFilter();
+}
+function doFilter(){
+    const q=document.getElementById('q').value.toLowerCase().trim();
+    let cnt=0;
+    document.querySelectorAll('.card').forEach(c=>{
+        const mq=!q||c.dataset.s.includes(q);
+        const me=fEra==='all'||c.dataset.e===fEra;
+        const mc=fCont==='all'||c.dataset.c===fCont;
+        if(mq&&me&&mc){c.classList.remove('hide');cnt++;}else{c.classList.add('hide');}
+    });
+    document.getElementById('rcnt').textContent=cnt+'개 위치';
+}
+
+// --- Slug for hash ---
+function toSlug(s){ return encodeURIComponent(s.replace(/\s+/g,'-')); }
+function fromSlug(s){ return decodeURIComponent(s).replace(/-/g,' '); }
+
+// --- Render ---
+function render(){
+    const g=document.getElementById('grid');
+    D.forEach((d,i)=>{
+        const card=document.createElement('div');
+        card.className='card';card.dataset.idx=i;
+        card.dataset.e=d.e;card.dataset.c=d.c;
+        card.dataset.s=`${d.e} ${d.c} ${d.l} ${d.d}`.toLowerCase();
+        const ec=d.e==='고대'?'ancient':d.e==='현대'?'present':'future';
+        const cc=d.c==='미그레이나'?'mig':d.c==='가를레아'?'gar':'etc';
+        const hasImg=d.i.length>0;
+        let ih='';
+        if(hasImg){const cl=d.i.length===1?'card-imgs single':'card-imgs';ih=`<div class="${cl}">${d.i.map(f=>`<img src="${f}" loading="lazy"/>`).join('')}</div>`;}
+        else{ih=`<div class="no-img">스크린샷 미등록</div>`;}
+        card.innerHTML=`<span class="list-img-dot ${hasImg?'':'no'}"></span>${ih}<div class="card-body"><div class="card-tags"><span class="tag tag-${ec}">${d.e}</span><span class="tag tag-${cc}">${d.c}</span></div><div class="card-loc">${d.l}</div><div class="card-dial">${d.d}</div>${d.a?`<div class="card-author">- ${d.a}</div>`:''}</div>`;
+        card.onclick=()=>openM(i);
+        g.appendChild(card);
+    });
+    doFilter();
+}
+
+// --- Modal ---
+function openM(i){
+    const d=D[i];
+    const ec=d.e==='고대'?'ancient':d.e==='현대'?'present':'future';
+    const cc=d.c==='미그레이나'?'mig':d.c==='가를레아'?'gar':'etc';
+    let ih='';
+    if(d.i.length){const cl=d.i.length===1?'modal-imgs single':'modal-imgs';ih=`<div class="${cl}">${d.i.map(f=>`<img src="${f}" onclick="event.stopPropagation();openLB(this)"/>`).join('')}</div>`;}
+    const slug=toSlug(d.l);
+    document.getElementById('mc').innerHTML=`${ih}<div class="modal-body"><div class="card-tags"><span class="tag tag-${ec}">${d.e}</span><span class="tag tag-${cc}">${d.c}</span></div><div class="card-loc">${d.l}</div><div class="card-dial">${d.d}</div>${d.a?`<div class="card-author">- ${d.a}</div>`:''}<a class="modal-link" onclick="copyLink('${slug}')">🔗 링크 복사<span class="copied-toast" id="toast">복사됨!</span></a></div>`;
+    history.replaceState(null,'','#'+slug);
+    document.getElementById('modal').classList.add('open');
+    document.body.style.overflow='hidden';
+}
+function closeModal(){
+    document.getElementById('modal').classList.remove('open');
+    document.body.style.overflow='';
+    history.replaceState(null,'','#');
+}
+function copyLink(slug){
+    const url=location.origin+location.pathname+'#'+slug;
+    navigator.clipboard.writeText(url).then(()=>{
+        const t=document.getElementById('toast');
+        t.classList.add('show');
+        setTimeout(()=>t.classList.remove('show'),1500);
+    });
+}
+function openLB(img){document.getElementById('lbi').src=img.src;document.getElementById('lb').classList.add('on');}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.getElementById('lb').classList.remove('on');closeModal();}});
+
+// --- Hash routing ---
+function openFromHash(){
+    const h=location.hash.slice(1);
+    if(!h) return;
+    const name=fromSlug(h);
+    const idx=D.findIndex(d=>d.l===name);
+    if(idx>=0) openM(idx);
+}
+
+render();
+openFromHash();
+window.addEventListener('hashchange', openFromHash);
+</script>
+</body>
+</html>
