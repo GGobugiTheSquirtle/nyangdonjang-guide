@@ -81,36 +81,28 @@
         .vbtn.on { background: #fff; color: #37352f; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
         .vbtn svg { width: 18px; height: 18px; }
 
-        /* Filters */
-        .filters {
-            display: flex; flex-direction: column; gap: 6px;
-            padding: 10px 0 6px;
+        /* Sort Toggle */
+        .sort-toggle {
+            display: flex; gap: 2px;
+            background: #f1f1ef;
+            border-radius: 6px;
+            padding: 3px;
+            flex-shrink: 0;
         }
-        .filter-row {
-            display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
-        }
-        .filter-label {
-            font-size: 12px; color: #b4b4b0; font-weight: 500;
-            min-width: 48px; flex-shrink: 0;
-        }
-        .fbtn {
+        .sbtn {
             padding: 4px 12px;
+            border: none; background: transparent;
             border-radius: 4px;
-            border: none;
-            background: transparent;
-            color: #9b9a97;
-            font-size: 13px;
             cursor: pointer;
-            transition: all .12s;
+            font-size: 12px;
+            color: #9b9a97;
             font-family: inherit;
+            transition: all .12s;
+            white-space: nowrap;
         }
-        .fbtn:hover { background: #f1f1ef; color: #37352f; }
-        .fbtn.on { background: #37352f; color: #fff; }
-        .fbtn.on-ancient { background: #c77d3a; color: #fff; }
-        .fbtn.on-present { background: #4d9c6d; color: #fff; }
-        .fbtn.on-future { background: #437ea6; color: #fff; }
-        .fsep { color: #e3e3e1; font-size: 14px; padding: 0 2px; }
-        .result-count { font-size: 12px; color: #b4b4b0; padding: 2px 0 8px; }
+        .sbtn:hover { color: #37352f; }
+        .sbtn.on { background: #fff; color: #37352f; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+        .result-count { font-size: 12px; color: #b4b4b0; padding: 6px 0 8px; }
 
         /* Grid (Card View) */
         .grid {
@@ -364,37 +356,25 @@
     <div class="search-wrap">
         <div class="search-row">
             <div class="search-box">
-                <input type="text" id="q" placeholder="위치명, 대사, 시대로 검색..." oninput="doFilter()" />
+                <input type="text" id="q" placeholder="대사로 검색..." oninput="doFilter()" />
+            </div>
+            <div class="sort-toggle">
+                <button class="sbtn on" id="sDial" onclick="setSort('dial')" title="대사 가나다순">대사순</button>
+                <button class="sbtn" id="sLoc" onclick="setSort('loc')" title="위치별 정렬">위치순</button>
             </div>
             <div class="view-toggle">
-                <button class="vbtn on" id="vCard" onclick="setView('card')" title="카드 보기">
+                <button class="vbtn" id="vCard" onclick="setView('card')" title="카드 보기">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
                 </button>
-                <button class="vbtn" id="vList" onclick="setView('list')" title="리스트 보기">
+                <button class="vbtn on" id="vList" onclick="setView('list')" title="리스트 보기">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                 </button>
-            </div>
-        </div>
-        <div class="filters" id="filters">
-            <div class="filter-row">
-                <span class="filter-label">시간</span>
-                <button class="fbtn on" data-type="era" data-val="all" onclick="setF(this)">전체</button>
-                <button class="fbtn" data-type="era" data-val="고대" onclick="setF(this)">고대</button>
-                <button class="fbtn" data-type="era" data-val="현대" onclick="setF(this)">현대</button>
-                <button class="fbtn" data-type="era" data-val="미래" onclick="setF(this)">미래</button>
-            </div>
-            <div class="filter-row">
-                <span class="filter-label">대륙</span>
-                <button class="fbtn on" data-type="cont" data-val="all" onclick="setF(this)">전체</button>
-                <button class="fbtn" data-type="cont" data-val="미그레이나" onclick="setF(this)">미그레이나</button>
-                <button class="fbtn" data-type="cont" data-val="가를레아" onclick="setF(this)">가를레아</button>
-                <button class="fbtn" data-type="cont" data-val="기타" onclick="setF(this)">기타</button>
             </div>
         </div>
         <div class="result-count" id="rcnt"></div>
     </div>
 
-    <div class="grid" id="grid"></div>
+    <div class="grid list-view" id="grid"></div>
 </div>
 
 <div class="modal-bg" id="modal" onclick="if(event.target===this)closeModal()">
@@ -419,7 +399,7 @@ const D=[
 {e:"고대",c:"미그레이나",l:"시간의 탑 (7층)",d:"음산한 시계",i:[],a:""},
 {e:"고대",c:"미그레이나",l:"별의 탑 (1층)",d:"탑의 벽이 닫혔다 열렸다",i:[],a:""},
 {e:"고대",c:"미그레이나",l:"초원의 마을 사르파",d:"둥근 문에 색색의 천...... 초원 변두리에 이런 멋진 마을이 다 있었구냥.",i:["https://files.catbox.moe/ygkuow.PNG","https://files.catbox.moe/3e8qr2.PNG"],a:"cheese1006"},
-{e:"고대",c:"미그레이나",l:"차롤 초원",d:"초원에 커다란 폭포",i:[],a:""},
+{e:"고대",c:"미그레이나",l:"차롤 초원",d:"초원에 커다란 폭포",i:["https://files.catbox.moe/yszl4w.webp","https://files.catbox.moe/uzvbbk.webp"],a:"덴기스"},
 {e:"고대",c:"미그레이나",l:"연옥계",d:"어서 데리고 돌아와라냥! 살아 있는 자가 있을 곳이 아니다냥!",i:["https://files.catbox.moe/ta5as0.jpg","https://files.catbox.moe/52owx4.jpg"],a:"이명진"},
 // 고대 - 가를레아
 {e:"고대",c:"가를레아",l:"바다의 땅 자미",d:"짚단이 도처에...... 특이한 항구 도시로구냥...",i:["https://files.catbox.moe/a1thx9.jpg","https://files.catbox.moe/i8tlky.jpg"],a:"덴기스"},
@@ -430,7 +410,7 @@ const D=[
 {e:"고대",c:"가를레아",l:"산의 땅 가다로",d:"산바람이 시원하고 바람개비가 돌아가는 소리에 마음이 포근해지는 곳이다냥~",i:["https://files.catbox.moe/ng9wct.PNG","https://files.catbox.moe/sul0r2.PNG"],a:"cheese1006"},
 {e:"고대",c:"가를레아",l:"호키시의 숲",d:"오색찬란한 숲, 맛있는 과일",i:[],a:""},
 {e:"고대",c:"가를레아",l:"고대수의 마을 파도르",d:"나무 위에 커다란 인간들이 잔뜩...... 스케일이 엄청난 마을이다냥.",i:["https://files.catbox.moe/lbr9dy.jpg","https://files.catbox.moe/sjklap.jpg"],a:"우어엌"},
-{e:"고대",c:"가를레아",l:"고목의 벌판",d:"커다란 나무 아래에 그림자",i:[],a:""},
+{e:"고대",c:"가를레아",l:"고목의 벌판",d:"커다란 나무 아래에 그림자가 생겼구냥. 시원하겠다냥~",i:["https://files.catbox.moe/tm8lvd.webp","https://files.catbox.moe/89p5e2.webp"],a:"딩"},
 {e:"고대",c:"가를레아",l:"귀화 동굴 (지하 1층)",d:"동굴 안에 커다란 문",i:[],a:""},
 {e:"고대",c:"가를레아",l:"쿠루치 해안",d:"해안 너머에 부서져 가는 배",i:[],a:""},
 // 현대 - 미그레이나
@@ -466,7 +446,7 @@ const D=[
 {e:"현대",c:"가를레아",l:"박명의 섬",d:"냣?! 저 눈알 같은 건 도대체 뭐냥?! 참 이상한 섬이다냥......",i:["https://files.catbox.moe/hislrj.PNG","https://files.catbox.moe/68lf71.PNG"],a:"cheese1006"},
 // 미래 - 미그레이나
 {e:"미래",c:"미그레이나",l:"새벽빛의 도시 엘지온",d:"최첨단 도시로구냥! 이 시대에서는 어떤 물건을 팔고 있을까냥?",i:["https://files.catbox.moe/n4r24k.png","https://files.catbox.moe/b2dqtl.png"],a:"나무Actors"},
-{e:"미래",c:"미그레이나",l:"엘지온 에어포트",d:"철로 된 상자가 하늘에서 왔다갔다",i:[],a:""},
+{e:"미래",c:"미그레이나",l:"엘지온 에어포트",d:"철로 된 상자가 하늘에서 왔다 갔다...... 인간은 참 바쁘게 사는구냥.",i:["https://files.catbox.moe/2dtrvm.webp","https://files.catbox.moe/ojx0uk.webp"],a:"덴기스"},
 {e:"미래",c:"미그레이나",l:"폐도 루트 99",d:"길 끝이 무너져",i:[],a:""},
 {e:"미래",c:"미그레이나",l:"공업도시폐허 (연결통로)",d:"을씨년스러운 폐허",i:[],a:""},
 {e:"미래",c:"미그레이나",l:"제노 도메인",d:"도시보다 훨씬 높은 곳, 연구",i:[],a:""},
@@ -486,7 +466,7 @@ const D=[
 {e:"미래",c:"기타",l:"명협계 - 그림자의 도시 나즈리크",d:"우중충한 거리구냥... 빨갛고 파란 안개 같은건 대체 뭘까냥?",i:["https://files.catbox.moe/pjqdmk.jpg","https://files.catbox.moe/gdkv0h.jpg"],a:"덴기스"},
 ];
 
-let fEra='all',fCont='all',curView='card';
+let curView='list', curSort='dial';
 
 // --- View Toggle ---
 function setView(v){
@@ -497,21 +477,30 @@ function setView(v){
     document.getElementById('vList').className=v==='list'?'vbtn on':'vbtn';
 }
 
-// --- Filters ---
-function setF(btn){
-    const t=btn.dataset.type, v=btn.dataset.val;
-    if(t==='era'){fEra=v;document.querySelectorAll('[data-type=era]').forEach(b=>b.className='fbtn');btn.className=v==='all'?'fbtn on':v==='고대'?'fbtn on-ancient':v==='현대'?'fbtn on-present':'fbtn on-future';}
-    if(t==='cont'){fCont=v;document.querySelectorAll('[data-type=cont]').forEach(b=>b.className='fbtn');btn.className='fbtn on';}
-    doFilter();
+// --- Sort ---
+function setSort(s){
+    curSort=s;
+    document.getElementById('sDial').className=s==='dial'?'sbtn on':'sbtn';
+    document.getElementById('sLoc').className=s==='loc'?'sbtn on':'sbtn';
+    reorder();
 }
+function reorder(){
+    const g=document.getElementById('grid');
+    const cards=[...g.children];
+    cards.sort((a,b)=>{
+        if(curSort==='dial') return a.dataset.d.localeCompare(b.dataset.d,'ko');
+        return a.dataset.l.localeCompare(b.dataset.l,'ko');
+    });
+    cards.forEach(c=>g.appendChild(c));
+}
+
+// --- Filter (search only) ---
 function doFilter(){
     const q=document.getElementById('q').value.toLowerCase().trim();
     let cnt=0;
     document.querySelectorAll('.card').forEach(c=>{
-        const mq=!q||c.dataset.s.includes(q);
-        const me=fEra==='all'||c.dataset.e===fEra;
-        const mc=fCont==='all'||c.dataset.c===fCont;
-        if(mq&&me&&mc){c.classList.remove('hide');cnt++;}else{c.classList.add('hide');}
+        const mq=!q||c.dataset.d.includes(q);
+        if(mq){c.classList.remove('hide');cnt++;}else{c.classList.add('hide');}
     });
     document.getElementById('rcnt').textContent=cnt+'개 위치';
 }
@@ -527,7 +516,7 @@ function render(){
         const card=document.createElement('div');
         card.className='card';card.dataset.idx=i;
         card.dataset.e=d.e;card.dataset.c=d.c;
-        card.dataset.s=`${d.e} ${d.c} ${d.l} ${d.d}`.toLowerCase();
+        card.dataset.d=d.d.toLowerCase();card.dataset.l=d.l.toLowerCase();
         const ec=d.e==='고대'?'ancient':d.e==='현대'?'present':'future';
         const cc=d.c==='미그레이나'?'mig':d.c==='가를레아'?'gar':'etc';
         const hasImg=d.i.length>0;
@@ -538,6 +527,7 @@ function render(){
         card.onclick=()=>openM(i);
         g.appendChild(card);
     });
+    reorder();
     doFilter();
 }
 
