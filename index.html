@@ -17,16 +17,22 @@
         }
         .app { max-width: 1080px; margin: 0 auto; padding: 0 24px 60px; }
 
-        /* Header */
+        /* Header - 반응형 */
         .hdr {
-            padding: 60px 0 24px;
+            padding: 48px 0 20px;
             border-bottom: 1px solid #e3e3e1;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
-        .hdr-icon { font-size: 48px; margin-bottom: 12px; }
-        .hdr h1 { font-size: 40px; font-weight: 700; color: #37352f; letter-spacing: -0.5px; }
+        .hdr-icon { font-size: 40px; margin-bottom: 8px; }
+        .hdr h1 { font-size: 36px; font-weight: 700; color: #37352f; letter-spacing: -0.5px; }
         .hdr .sub { color: #9b9a97; font-size: 14px; margin-top: 4px; }
-        .hdr .cr { color: #b4b4b0; font-size: 12px; margin-top: 12px; }
+        .hdr .cr { color: #b4b4b0; font-size: 12px; margin-top: 10px; }
+        @media(max-width:700px) {
+            .hdr { padding: 32px 0 16px; }
+            .hdr-icon { font-size: 32px; }
+            .hdr h1 { font-size: 24px; }
+            .hdr .sub { font-size: 13px; }
+        }
 
         /* Search */
         .search-wrap {
@@ -34,15 +40,13 @@
             background: rgba(255,255,255,.92);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            padding: 12px 0 8px;
+            padding: 12px 0 4px;
             border-bottom: 1px solid #f1f1ef;
         }
         .search-row {
             display: flex; gap: 8px; align-items: center;
         }
-        .search-box {
-            flex: 1;
-        }
+        .search-box { flex: 1; }
         .search-box input {
             width: 100%;
             padding: 10px 14px 10px 38px;
@@ -59,6 +63,9 @@
         }
         .search-box input:focus { border-color: #2eaadc; background-color: #fff; box-shadow: 0 0 0 3px rgba(46,170,220,.15); }
         .search-box input::placeholder { color: #b4b4b0; }
+        @media(max-width:700px) {
+            .search-box input { min-height: 44px; font-size: 15px; }
+        }
 
         /* View Toggle */
         .view-toggle {
@@ -69,7 +76,7 @@
             flex-shrink: 0;
         }
         .vbtn {
-            width: 36px; height: 34px;
+            width: 40px; height: 38px;
             border: none; background: transparent;
             border-radius: 4px;
             cursor: pointer;
@@ -79,7 +86,11 @@
         }
         .vbtn:hover { color: #37352f; }
         .vbtn.on { background: #fff; color: #37352f; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+        .vbtn:focus-visible { outline: 2px solid #2eaadc; outline-offset: 1px; }
         .vbtn svg { width: 18px; height: 18px; }
+        @media(max-width:700px) {
+            .vbtn { width: 44px; height: 44px; }
+        }
 
         /* Sort Toggle */
         .sort-toggle {
@@ -90,7 +101,7 @@
             flex-shrink: 0;
         }
         .sbtn {
-            padding: 4px 12px;
+            padding: 6px 14px;
             border: none; background: transparent;
             border-radius: 4px;
             cursor: pointer;
@@ -102,7 +113,48 @@
         }
         .sbtn:hover { color: #37352f; }
         .sbtn.on { background: #fff; color: #37352f; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
-        .result-count { font-size: 12px; color: #b4b4b0; padding: 6px 0 8px; }
+        .sbtn:focus-visible { outline: 2px solid #2eaadc; outline-offset: 1px; }
+        @media(max-width:700px) {
+            .sbtn { min-height: 44px; padding: 6px 12px; display: flex; align-items: center; }
+        }
+
+        /* Filter Chips */
+        .filter-row {
+            display: flex; gap: 6px; padding: 8px 0 4px;
+            flex-wrap: wrap; align-items: center;
+        }
+        .filter-sep {
+            width: 1px; height: 20px; background: #e3e3e1;
+            margin: 0 2px; flex-shrink: 0;
+        }
+        .fbtn {
+            padding: 4px 12px;
+            border: 1px solid #e3e3e1;
+            background: #fff;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            color: #787774;
+            font-family: inherit;
+            transition: all .15s;
+            white-space: nowrap;
+        }
+        .fbtn:hover { border-color: #b4b4b0; }
+        .fbtn:focus-visible { outline: 2px solid #2eaadc; outline-offset: 1px; }
+        .fbtn.on { border-color: transparent; }
+        .fbtn.on[data-v="\uace0\ub300"] { background: #fdecc8; color: #9f6b31; }
+        .fbtn.on[data-v="\ud604\ub300"] { background: #dbeddb; color: #2b6e3f; }
+        .fbtn.on[data-v="\ubbf8\ub798"] { background: #d3e5ef; color: #2e6b8a; }
+        .fbtn.on[data-v="\ubbf8\uadf8\ub808\uc774\ub098"] { background: #f5e0d0; color: #9a5c34; }
+        .fbtn.on[data-v="\uac00\ub974\ub808\uc544"] { background: #d8f0e0; color: #347a4a; }
+        .fbtn.on[data-v="\uae30\ud0c0"] { background: #ebeced; color: #6b6f72; }
+        @media(max-width:700px) {
+            .fbtn { min-height: 36px; display: flex; align-items: center; }
+        }
+
+        .result-count { font-size: 12px; color: #b4b4b0; padding: 4px 0 8px; transition: color .2s; }
+        .result-count.flash { color: #2eaadc; }
 
         /* Grid (Card View) */
         .grid {
@@ -124,17 +176,31 @@
         .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.08); transform: translateY(-1px); }
         .card.hide { display: none; }
 
-        .card-imgs { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #f1f1ef; }
+        .card-imgs { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: #f1f1ef; }
         .card-imgs.single { grid-template-columns: 1fr; }
-        .card-imgs img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; }
+        .card-imgs img {
+            width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block;
+            background: #f1f1ef;
+        }
+
+        /* Image skeleton */
+        .card-imgs img:not([src]), .card-imgs img[src=""] {
+            animation: skeleton 1.2s ease-in-out infinite;
+        }
+        @keyframes skeleton {
+            0%, 100% { background: #f1f1ef; }
+            50% { background: #e8e7e4; }
+        }
 
         .no-img {
-            padding: 32px 16px;
+            padding: 28px 16px;
             text-align: center;
-            color: #d3d1cb;
+            color: #c4c2bc;
             font-size: 13px;
             background: #fafaf8;
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
         }
+        .no-img-icon { font-size: 24px; opacity: .5; }
 
         .card-body { padding: 14px 16px 16px; }
 
@@ -186,7 +252,6 @@
         .grid.list-view .card:last-child { border-bottom: 1px solid #e3e3e1; }
         .grid.list-view .card:last-child:not(.hide) { border-radius: 0 0 8px 8px; }
         .grid.list-view .card.hide { display: none; }
-        .grid.list-view .card.hide { display: none; }
         .grid.list-view .card:hover { transform: none; box-shadow: none; background: #fafaf8; }
 
         .grid.list-view .card-imgs,
@@ -229,7 +294,7 @@
             flex-shrink: 0;
             white-space: nowrap;
         }
-        /* list-view에서 이미지 있음 표시 */
+        /* list-view 이미지 유무 표시 */
         .list-img-dot {
             display: none;
             width: 8px; height: 8px;
@@ -243,11 +308,30 @@
 
         @media(max-width:700px) {
             .grid.list-view .card-body {
-                flex-wrap: wrap; gap: 4px 8px;
+                display: grid;
+                grid-template-columns: auto 1fr;
+                grid-template-rows: auto auto;
+                gap: 2px 10px;
+                padding: 10px 14px;
             }
-            .grid.list-view .card-loc { min-width: auto; }
-            .grid.list-view .card-dial { white-space: normal; -webkit-line-clamp: 1; display: -webkit-box; -webkit-box-orient: vertical; }
+            .grid.list-view .list-img-dot { grid-row: 1 / 3; align-self: center; }
+            .grid.list-view .card-tags { grid-column: 2; margin-bottom: 0; min-width: auto; }
+            .grid.list-view .card-loc { grid-column: 2; font-size: 14px; min-width: auto; }
+            .grid.list-view .card-dial { display: none; }
+            .grid.list-view .card-author { display: none; }
         }
+
+        /* Empty State */
+        .empty-state {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+            color: #b4b4b0;
+        }
+        .empty-state.show { display: block; }
+        .empty-state-icon { font-size: 40px; margin-bottom: 12px; opacity: .6; }
+        .empty-state-msg { font-size: 15px; color: #9b9a97; }
+        .empty-state-hint { font-size: 13px; color: #c4c2bc; margin-top: 6px; }
 
         /* Modal */
         .modal-bg {
@@ -256,12 +340,18 @@
             background: rgba(15,15,15,.6);
             z-index: 200;
             overflow-y: auto;
+            opacity: 0;
+            transition: opacity .2s ease;
         }
         .modal-bg.open {
             display: flex;
             justify-content: center;
             align-items: flex-start;
             padding: 48px 16px;
+        }
+        .modal-bg.visible { opacity: 1; }
+        @media(max-width:700px) {
+            .modal-bg.open { padding: 24px 12px; }
         }
         .modal {
             background: #fff;
@@ -270,9 +360,11 @@
             width: 100%;
             overflow: hidden;
             box-shadow: 0 24px 64px rgba(0,0,0,.2);
-            animation: modalIn .2s ease;
+            transform: translateY(12px);
+            opacity: 0;
+            transition: transform .25s ease, opacity .25s ease;
         }
-        @keyframes modalIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-bg.visible .modal { transform: translateY(0); opacity: 1; }
 
         .modal-close {
             position: fixed; top: 20px; right: 28px;
@@ -282,14 +374,15 @@
             font-size: 22px;
             cursor: pointer;
             z-index: 210;
-            width: 36px; height: 36px;
+            width: 40px; height: 40px;
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 2px 8px rgba(0,0,0,.1);
         }
         .modal-close:hover { background: #f1f1ef; }
+        .modal-close:focus-visible { outline: 2px solid #2eaadc; }
 
-        .modal-imgs { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #f1f1ef; }
+        .modal-imgs { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: #f1f1ef; }
         .modal-imgs.single { grid-template-columns: 1fr; }
         .modal-imgs img { width: 100%; cursor: pointer; display: block; }
 
@@ -356,32 +449,39 @@
     <div class="search-wrap">
         <div class="search-row">
             <div class="search-box">
-                <input type="text" id="q" placeholder="대사로 검색..." oninput="doFilter()" />
+                <label for="q" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">검색</label>
+                <input type="text" id="q" placeholder="위치명 또는 대사로 검색..." oninput="doFilter()" />
             </div>
             <div class="sort-toggle">
-                <button class="sbtn on" id="sDial" onclick="setSort('dial')" title="대사 가나다순">대사순</button>
-                <button class="sbtn" id="sLoc" onclick="setSort('loc')" title="위치별 정렬">위치순</button>
+                <button class="sbtn on" id="sDial" onclick="setSort('dial')" title="대사 가나다순" aria-label="대사순 정렬" aria-pressed="true">대사순</button>
+                <button class="sbtn" id="sLoc" onclick="setSort('loc')" title="위치별 정렬" aria-label="위치순 정렬" aria-pressed="false">위치순</button>
             </div>
             <div class="view-toggle">
-                <button class="vbtn" id="vCard" onclick="setView('card')" title="카드 보기">
+                <button class="vbtn" id="vCard" onclick="setView('card')" title="카드 보기" aria-label="카드 뷰">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
                 </button>
-                <button class="vbtn on" id="vList" onclick="setView('list')" title="리스트 보기">
+                <button class="vbtn on" id="vList" onclick="setView('list')" title="리스트 보기" aria-label="리스트 뷰">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                 </button>
             </div>
         </div>
-        <div class="result-count" id="rcnt"></div>
+        <div class="filter-row" id="filters"></div>
+        <div class="result-count" id="rcnt" aria-live="polite"></div>
     </div>
 
     <div class="grid list-view" id="grid"></div>
+    <div class="empty-state" id="empty">
+        <div class="empty-state-icon">🔍</div>
+        <div class="empty-state-msg">검색 결과가 없습니다</div>
+        <div class="empty-state-hint">위치명이나 대사 내용으로 검색해 보세요</div>
+    </div>
 </div>
 
 <div class="modal-bg" id="modal" onclick="if(event.target===this)closeModal()">
-    <button class="modal-close" onclick="closeModal()">&#10005;</button>
+    <button class="modal-close" onclick="closeModal()" aria-label="닫기">&#10005;</button>
     <div class="modal" id="mc"></div>
 </div>
-<div class="lb" id="lb" onclick="this.classList.remove('on')"><img id="lbi" /></div>
+<div class="lb" id="lb" onclick="this.classList.remove('on')"><img id="lbi" alt="확대 이미지" /></div>
 
 <script>
 const D=[
@@ -467,15 +567,48 @@ const D=[
 ];
 
 let curView='list', curSort='dial';
+let filterE=new Set(), filterC=new Set();
+
+// --- Filter Chips ---
+function buildFilters(){
+    const row=document.getElementById('filters');
+    const eras=["고대","현대","미래"];
+    const conts=[...new Set(D.map(function(d){return d.c}))];
+    eras.forEach(function(v){
+        var b=document.createElement('button');
+        b.className='fbtn'; b.dataset.g='e'; b.dataset.v=v;
+        b.textContent=v;
+        b.setAttribute('aria-pressed','false');
+        b.onclick=function(){toggleFilter(b)};
+        row.appendChild(b);
+    });
+    var sep=document.createElement('span'); sep.className='filter-sep';
+    row.appendChild(sep);
+    conts.forEach(function(v){
+        var b=document.createElement('button');
+        b.className='fbtn'; b.dataset.g='c'; b.dataset.v=v;
+        b.textContent=v;
+        b.setAttribute('aria-pressed','false');
+        b.onclick=function(){toggleFilter(b)};
+        row.appendChild(b);
+    });
+}
+function toggleFilter(btn){
+    var g=btn.dataset.g, v=btn.dataset.v;
+    var set=g==='e'?filterE:filterC;
+    if(set.has(v)){ set.delete(v); btn.classList.remove('on'); btn.setAttribute('aria-pressed','false'); }
+    else{ set.add(v); btn.classList.add('on'); btn.setAttribute('aria-pressed','true'); }
+    doFilter();
+}
 
 // --- View Toggle ---
 function setView(v){
     curView=v;
-    const g=document.getElementById('grid');
+    var g=document.getElementById('grid');
     if(v==='list'){g.classList.add('list-view');}else{g.classList.remove('list-view');}
     document.getElementById('vCard').className=v==='card'?'vbtn on':'vbtn';
     document.getElementById('vList').className=v==='list'?'vbtn on':'vbtn';
-    if(v==='card') document.querySelectorAll('img[data-src]:not([src])').forEach(img=>imgObs&&imgObs.observe(img));
+    if(v==='card') document.querySelectorAll('img[data-src]:not([src])').forEach(function(img){if(imgObs)imgObs.observe(img)});
 }
 
 // --- Sort ---
@@ -483,107 +616,217 @@ function setSort(s){
     curSort=s;
     document.getElementById('sDial').className=s==='dial'?'sbtn on':'sbtn';
     document.getElementById('sLoc').className=s==='loc'?'sbtn on':'sbtn';
+    document.getElementById('sDial').setAttribute('aria-pressed', s==='dial'?'true':'false');
+    document.getElementById('sLoc').setAttribute('aria-pressed', s==='loc'?'true':'false');
     reorder();
 }
 function reorder(){
-    const g=document.getElementById('grid');
-    const cards=[...g.children];
-    cards.sort((a,b)=>{
+    var g=document.getElementById('grid');
+    var cards=[].slice.call(g.children);
+    cards.sort(function(a,b){
         if(curSort==='dial') return a.dataset.d.localeCompare(b.dataset.d,'ko');
         return a.dataset.l.localeCompare(b.dataset.l,'ko');
     });
-    cards.forEach(c=>g.appendChild(c));
+    cards.forEach(function(c){g.appendChild(c)});
 }
 
-// --- Filter (search only) ---
+// --- Filter (search + chips) ---
 function doFilter(){
-    const q=document.getElementById('q').value.toLowerCase().trim();
-    let cnt=0;
-    document.querySelectorAll('.card').forEach(c=>{
-        const mq=!q||c.dataset.d.includes(q);
-        if(mq){c.classList.remove('hide');cnt++;}else{c.classList.add('hide');}
+    var q=document.getElementById('q').value.toLowerCase().trim();
+    var cnt=0;
+    document.querySelectorAll('.card').forEach(function(c){
+        var mq=!q || c.dataset.d.indexOf(q)!==-1 || c.dataset.l.indexOf(q)!==-1;
+        var me=filterE.size===0 || filterE.has(c.dataset.e);
+        var mc=filterC.size===0 || filterC.has(c.dataset.c);
+        if(mq && me && mc){c.classList.remove('hide');cnt++;}else{c.classList.add('hide');}
     });
-    document.getElementById('rcnt').textContent=cnt+'개 위치';
+    var rc=document.getElementById('rcnt');
+    rc.textContent=cnt+'개 위치';
+    rc.classList.add('flash'); setTimeout(function(){rc.classList.remove('flash')},300);
+    document.getElementById('empty').className=cnt===0?'empty-state show':'empty-state';
 }
 
 // --- Slug for hash ---
 function toSlug(s){ return encodeURIComponent(s.replace(/\s+/g,'-')); }
 function fromSlug(s){ return decodeURIComponent(s).replace(/-/g,' '); }
 
+// --- Safe HTML builder helpers ---
+function esc(s){ var d=document.createElement('div'); d.textContent=s; return d.textContent; }
+
 // --- Render ---
 function render(){
-    const g=document.getElementById('grid');
-    D.forEach((d,i)=>{
-        const card=document.createElement('div');
+    var g=document.getElementById('grid');
+    D.forEach(function(d,i){
+        var card=document.createElement('div');
         card.className='card';card.dataset.idx=i;
         card.dataset.e=d.e;card.dataset.c=d.c;
         card.dataset.d=d.d.toLowerCase();card.dataset.l=d.l.toLowerCase();
-        const ec=d.e==='고대'?'ancient':d.e==='현대'?'present':'future';
-        const cc=d.c==='미그레이나'?'mig':d.c==='가를레아'?'gar':'etc';
-        const hasImg=d.i.length>0;
-        let ih='';
-        if(hasImg){const cl=d.i.length===1?'card-imgs single':'card-imgs';ih=`<div class="${cl}">${d.i.map(f=>`<img data-src="${f}" loading="lazy"/>`).join('')}</div>`;}
-        else{ih=`<div class="no-img">스크린샷 미등록</div>`;}
-        card.innerHTML=`<span class="list-img-dot ${hasImg?'':'no'}"></span>${ih}<div class="card-body"><div class="card-tags"><span class="tag tag-${ec}">${d.e}</span><span class="tag tag-${cc}">${d.c}</span></div><div class="card-loc">${d.l}</div><div class="card-dial">${d.d}</div>${d.a?`<div class="card-author">- ${d.a}</div>`:''}</div>`;
-        card.onclick=()=>openM(i);
+        var ec=d.e==='고대'?'ancient':d.e==='현대'?'present':'future';
+        var cc=d.c==='미그레이나'?'mig':d.c==='가를레아'?'gar':'etc';
+        var hasImg=d.i.length>0;
+
+        // list-img-dot
+        var dot=document.createElement('span');
+        dot.className='list-img-dot'+(hasImg?'':' no');
+        card.appendChild(dot);
+
+        // images or no-img
+        if(hasImg){
+            var imgWrap=document.createElement('div');
+            imgWrap.className=d.i.length===1?'card-imgs single':'card-imgs';
+            d.i.forEach(function(f){
+                var img=document.createElement('img');
+                img.dataset.src=f;
+                img.alt=d.l+' 스크린샷';
+                img.loading='lazy';
+                imgWrap.appendChild(img);
+            });
+            card.appendChild(imgWrap);
+        } else {
+            var noImg=document.createElement('div');
+            noImg.className='no-img';
+            var ico=document.createElement('span');
+            ico.className='no-img-icon';
+            ico.textContent='\uD83D\uDCF7';
+            noImg.appendChild(ico);
+            noImg.appendChild(document.createTextNode('스크린샷 미등록'));
+            card.appendChild(noImg);
+        }
+
+        // card body
+        var body=document.createElement('div');
+        body.className='card-body';
+
+        var tags=document.createElement('div');
+        tags.className='card-tags';
+        var tagE=document.createElement('span'); tagE.className='tag tag-'+ec; tagE.textContent=d.e;
+        var tagC=document.createElement('span'); tagC.className='tag tag-'+cc; tagC.textContent=d.c;
+        tags.appendChild(tagE); tags.appendChild(tagC);
+        body.appendChild(tags);
+
+        var loc=document.createElement('div'); loc.className='card-loc'; loc.textContent=d.l;
+        body.appendChild(loc);
+
+        var dial=document.createElement('div'); dial.className='card-dial'; dial.textContent=d.d;
+        body.appendChild(dial);
+
+        if(d.a){
+            var author=document.createElement('div'); author.className='card-author'; author.textContent='- '+d.a;
+            body.appendChild(author);
+        }
+        card.appendChild(body);
+
+        card.onclick=function(){openM(i)};
         g.appendChild(card);
     });
+    buildFilters();
     reorder();
     doFilter();
     initLazy();
 }
 
 // --- Lazy image loading ---
-let imgObs;
+var imgObs;
 function initLazy(){
     if(imgObs) imgObs.disconnect();
-    imgObs=new IntersectionObserver((entries)=>{
-        entries.forEach(en=>{
+    imgObs=new IntersectionObserver(function(entries){
+        entries.forEach(function(en){
             if(en.isIntersecting){
-                const img=en.target;
+                var img=en.target;
                 img.src=img.dataset.src;
                 imgObs.unobserve(img);
             }
         });
     },{rootMargin:'200px'});
-    document.querySelectorAll('img[data-src]').forEach(img=>imgObs.observe(img));
+    document.querySelectorAll('img[data-src]').forEach(function(img){imgObs.observe(img)});
 }
 
 // --- Modal ---
 function openM(i){
-    const d=D[i];
-    const ec=d.e==='고대'?'ancient':d.e==='현대'?'present':'future';
-    const cc=d.c==='미그레이나'?'mig':d.c==='가를레아'?'gar':'etc';
-    let ih='';
-    if(d.i.length){const cl=d.i.length===1?'modal-imgs single':'modal-imgs';ih=`<div class="${cl}">${d.i.map(f=>`<img src="${f}" onclick="event.stopPropagation();openLB(this)"/>`).join('')}</div>`;}
-    const slug=toSlug(d.l);
-    document.getElementById('mc').innerHTML=`${ih}<div class="modal-body"><div class="card-tags"><span class="tag tag-${ec}">${d.e}</span><span class="tag tag-${cc}">${d.c}</span></div><div class="card-loc">${d.l}</div><div class="card-dial">${d.d}</div>${d.a?`<div class="card-author">- ${d.a}</div>`:''}<a class="modal-link" onclick="copyLink('${slug}')">🔗 링크 복사<span class="copied-toast" id="toast">복사됨!</span></a></div>`;
+    var d=D[i];
+    var ec=d.e==='고대'?'ancient':d.e==='현대'?'present':'future';
+    var cc=d.c==='미그레이나'?'mig':d.c==='가를레아'?'gar':'etc';
+    var mc=document.getElementById('mc');
+    mc.textContent=''; // clear
+
+    if(d.i.length){
+        var imgWrap=document.createElement('div');
+        imgWrap.className=d.i.length===1?'modal-imgs single':'modal-imgs';
+        d.i.forEach(function(f){
+            var img=document.createElement('img');
+            img.src=f;
+            img.alt=d.l+' 스크린샷';
+            img.onclick=function(e){e.stopPropagation();openLB(img)};
+            imgWrap.appendChild(img);
+        });
+        mc.appendChild(imgWrap);
+    }
+
+    var body=document.createElement('div');
+    body.className='modal-body';
+
+    var tags=document.createElement('div');
+    tags.className='card-tags';
+    var tagE=document.createElement('span'); tagE.className='tag tag-'+ec; tagE.textContent=d.e;
+    var tagC=document.createElement('span'); tagC.className='tag tag-'+cc; tagC.textContent=d.c;
+    tags.appendChild(tagE); tags.appendChild(tagC);
+    body.appendChild(tags);
+
+    var loc=document.createElement('div'); loc.className='card-loc'; loc.textContent=d.l;
+    body.appendChild(loc);
+
+    var dial=document.createElement('div'); dial.className='card-dial'; dial.textContent=d.d;
+    body.appendChild(dial);
+
+    if(d.a){
+        var author=document.createElement('div'); author.className='card-author'; author.textContent='- '+d.a;
+        body.appendChild(author);
+    }
+
+    var slug=toSlug(d.l);
+    var link=document.createElement('a');
+    link.className='modal-link';
+    link.textContent='\uD83D\uDD17 링크 복사';
+    link.onclick=function(){copyLink(slug)};
+    var toast=document.createElement('span');
+    toast.className='copied-toast'; toast.id='toast'; toast.textContent='복사됨!';
+    link.appendChild(toast);
+    body.appendChild(link);
+
+    mc.appendChild(body);
+
     history.replaceState(null,'','#'+slug);
-    document.getElementById('modal').classList.add('open');
+    var bg=document.getElementById('modal');
+    bg.classList.add('open');
+    requestAnimationFrame(function(){requestAnimationFrame(function(){bg.classList.add('visible')})});
     document.body.style.overflow='hidden';
 }
 function closeModal(){
-    document.getElementById('modal').classList.remove('open');
-    document.body.style.overflow='';
+    var bg=document.getElementById('modal');
+    bg.classList.remove('visible');
+    setTimeout(function(){
+        bg.classList.remove('open');
+        document.body.style.overflow='';
+    }, 200);
     history.replaceState(null,'','#');
 }
 function copyLink(slug){
-    const url=location.origin+location.pathname+'#'+slug;
-    navigator.clipboard.writeText(url).then(()=>{
-        const t=document.getElementById('toast');
+    var url=location.origin+location.pathname+'#'+slug;
+    navigator.clipboard.writeText(url).then(function(){
+        var t=document.getElementById('toast');
         t.classList.add('show');
-        setTimeout(()=>t.classList.remove('show'),1500);
+        setTimeout(function(){t.classList.remove('show')},1500);
     });
 }
 function openLB(img){document.getElementById('lbi').src=img.src;document.getElementById('lb').classList.add('on');}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.getElementById('lb').classList.remove('on');closeModal();}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.getElementById('lb').classList.remove('on');closeModal();}});
 
 // --- Hash routing ---
 function openFromHash(){
-    const h=location.hash.slice(1);
+    var h=location.hash.slice(1);
     if(!h) return;
-    const name=fromSlug(h);
-    const idx=D.findIndex(d=>d.l===name);
+    var name=fromSlug(h);
+    var idx=D.findIndex(function(d){return d.l===name});
     if(idx>=0) openM(idx);
 }
 
