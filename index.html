@@ -626,6 +626,14 @@ function buildFilters(){
     const row=document.getElementById('filters');
     const eras=["고대","현대","미래"];
     const conts=[...new Set(D.map(function(d){return d.c}))];
+    
+    // 시대 필터 - 전체 추가
+    var be=document.createElement('button');
+    be.className='fbtn on'; be.dataset.g='e'; be.dataset.v='';
+    be.textContent='전체'; be.setAttribute('aria-pressed','true');
+    be.onclick=function(){toggleFilter(be)};
+    row.appendChild(be);
+
     eras.forEach(function(v){
         var b=document.createElement('button');
         b.className='fbtn'; b.dataset.g='e'; b.dataset.v=v;
@@ -634,8 +642,17 @@ function buildFilters(){
         b.onclick=function(){toggleFilter(b)};
         row.appendChild(b);
     });
+    
     var sep=document.createElement('span'); sep.className='filter-sep';
     row.appendChild(sep);
+    
+    // 대륙 필터 - 전체 추가
+    var bc=document.createElement('button');
+    bc.className='fbtn on'; bc.dataset.g='c'; bc.dataset.v='';
+    bc.textContent='전체'; bc.setAttribute('aria-pressed','true');
+    bc.onclick=function(){toggleFilter(bc)};
+    row.appendChild(bc);
+
     conts.forEach(function(v){
         var b=document.createElement('button');
         b.className='fbtn'; b.dataset.g='c'; b.dataset.v=v;
@@ -648,8 +665,24 @@ function buildFilters(){
 function toggleFilter(btn){
     var g=btn.dataset.g, v=btn.dataset.v;
     var set=g==='e'?filterE:filterC;
-    if(set.has(v)){ set.delete(v); btn.classList.remove('on'); btn.setAttribute('aria-pressed','false'); }
-    else{ set.add(v); btn.classList.add('on'); btn.setAttribute('aria-pressed','true'); }
+    
+    if(v === "") {
+        // '전체' 클릭 시 해당 그룹 초기화
+        set.clear();
+    } else {
+        // 개별 항목 클릭 시 토글
+        if(set.has(v)) set.delete(v);
+        else set.add(v);
+    }
+    
+    // 버튼 상태 일괄 업데이트
+    document.querySelectorAll('.fbtn[data-g="'+g+'"]').forEach(function(b){
+        var isAll = b.dataset.v === "";
+        var active = isAll ? set.size === 0 : set.has(b.dataset.v);
+        b.className = active ? 'fbtn on' : 'fbtn';
+        b.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+
     doFilter();
 }
 
