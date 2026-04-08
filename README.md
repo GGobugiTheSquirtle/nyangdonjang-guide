@@ -1,6 +1,6 @@
 # nyangdonjang-guide
 
-어나더에덴(Another Eden) 냥도장(Cat Stamp) 위치 가이드. 67개 냥도장을 시대/대륙별로 검색하고 이미지로 확인할 수 있는 SPA.
+어나더에덴(Another Eden) 냥도장(Cat Stamp) 위치 가이드. 72개 냥도장을 시대/대륙별로 검색하고 이미지로 확인할 수 있는 SPA.
 
 ## Tech Stack
 
