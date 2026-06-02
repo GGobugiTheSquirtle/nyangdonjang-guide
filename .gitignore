@@ -1,0 +1,7 @@
+.netlify/
+.DS_Store
+Thumbs.db
+desktop.ini
+_tmp/
+_scratch/
+*.log
