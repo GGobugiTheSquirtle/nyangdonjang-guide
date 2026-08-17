@@ -4,4 +4,5 @@ Thumbs.db
 desktop.ini
 _tmp/
 _scratch/
+_dist/
 *.log
