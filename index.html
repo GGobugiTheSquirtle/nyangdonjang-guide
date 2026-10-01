@@ -391,6 +391,23 @@
             .card-body { padding: 14px 16px 16px; }
         }
 
+        /* 검색어 하이라이트
+           배경만 쓰면 브라우저 강제 다크모드에서 짙은 갈색으로 바뀜 → 노란 밑줄을 함께 둬서
+           어느 모드에서든 노란 표시가 남게 (밑줄 색은 강제 변환 대상이 아님, 실측) */
+        mark.hl {
+            background: #ffe066;
+            color: #1a1917;
+            font-weight: 600;
+            border-radius: 3px;
+            padding: 0 1px;
+            text-decoration: underline 3px #f5c400;
+            text-underline-offset: 3px;
+            text-decoration-skip-ink: none;
+        }
+        /* 검색 중에는 대사를 한 줄로 자르지 않음 — 일치 부분이 '…' 뒤에 숨지 않게 */
+        .grid.list-view.searching .card-dial { white-space: normal; }
+        .grid.searching .card-dial { -webkit-line-clamp: unset; }
+
         /* Empty State */
         .empty-state {
             display: none;
@@ -798,14 +815,34 @@ function reorder(){
 }
 
 // --- Filter (search + chips) ---
+function curQuery(){ return document.getElementById('q').value.toLowerCase().trim(); }
+// 검색어와 일치하는 부분을 <mark> 로 감싼다. innerHTML 을 쓰지 않고 텍스트 노드로 조립(데이터 문자열을 HTML 로 해석하지 않음)
+function hlText(el, text, q){
+    el.textContent='';
+    if(!q){ el.textContent=text; return; }
+    var low=text.toLowerCase(), i=0, j;
+    while((j=low.indexOf(q,i))!==-1){
+        if(j>i) el.appendChild(document.createTextNode(text.slice(i,j)));
+        var m=document.createElement('mark'); m.className='hl'; m.textContent=text.slice(j,j+q.length);
+        el.appendChild(m);
+        i=j+q.length;
+    }
+    if(i<text.length) el.appendChild(document.createTextNode(text.slice(i)));
+}
 function doFilter(){
-    var q=document.getElementById('q').value.toLowerCase().trim();
+    var q=curQuery();
     var cnt=0;
+    document.getElementById('grid').classList.toggle('searching', !!q);
     document.querySelectorAll('.card').forEach(function(c){
         var mq=!q || c.dataset.d.indexOf(q)!==-1 || c.dataset.l.indexOf(q)!==-1;
         var me=filterE.size===0 || filterE.has(c.dataset.e);
         var mc=filterC.size===0 || filterC.has(c.dataset.c);
-        if(mq && me && mc){c.classList.remove('hide');cnt++;}else{c.classList.add('hide');}
+        if(mq && me && mc){
+            c.classList.remove('hide');cnt++;
+            var d=D[c.dataset.idx];
+            hlText(c.querySelector('.card-loc'), d.l, q);
+            hlText(c.querySelector('.card-dial'), d.d, q);
+        }else{c.classList.add('hide');}
     });
     var rc=document.getElementById('rcnt');
     rc.textContent=cnt+'개 위치';
@@ -950,10 +987,10 @@ function openM(i, fromHistory){
     tags.appendChild(tagE); tags.appendChild(tagC);
     body.appendChild(tags);
 
-    var loc=document.createElement('div'); loc.className='card-loc'; loc.textContent=d.l;
+    var loc=document.createElement('div'); loc.className='card-loc'; hlText(loc, d.l, curQuery());
     body.appendChild(loc);
 
-    var dial=document.createElement('div'); dial.className='card-dial'; dial.textContent=d.d;
+    var dial=document.createElement('div'); dial.className='card-dial'; hlText(dial, d.d, curQuery());
     body.appendChild(dial);
 
     if(d.a){
