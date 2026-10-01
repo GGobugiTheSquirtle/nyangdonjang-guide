@@ -9,6 +9,36 @@
     <meta property="og:type" content="website">
     <title>냥도장 가이드 - 아나더에덴</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%90%B1%3C/text%3E%3C/svg%3E">
+    <meta name="color-scheme" content="light dark">
+    <script>
+    // 화면 테마: 'auto'(기기 설정) | 'light' | 'dark'. 첫 화면 깜빡임을 막으려고 스타일보다 먼저 적용
+    (function(){
+        var mq=window.matchMedia?matchMedia('(prefers-color-scheme: dark)'):null;
+        var cur='auto';
+        try{ cur=localStorage.getItem('theme')||'auto'; }catch(e){}
+        function apply(p){
+            var dark=p==='dark' || (p==='auto' && !!mq && mq.matches);
+            var root=document.documentElement;
+            root.setAttribute('data-theme', dark?'dark':'light');
+            root.setAttribute('data-theme-pref', p);
+            // 라이트를 직접 고른 경우 'only light': 그냥 'light' 면 크롬 '웹페이지 어둡게'가 강제로 어둡게 바꿈(실측).
+            // 다크는 'dark' 를 선언해야 크롬이 강제 변환을 건너뛰고 이 사이트의 다크 화면을 그대로 씀
+            root.style.colorScheme = dark ? 'dark' : (p==='light' ? 'only light' : 'light');
+        }
+        window.getThemePref=function(){ return cur; };
+        window.setThemePref=function(p){
+            cur=p;
+            try{ localStorage.setItem('theme',p); }catch(e){}
+            apply(p);
+            if(window.syncThemeButtons) syncThemeButtons();
+        };
+        apply(cur);
+        if(mq){
+            var onChange=function(){ if(cur==='auto') apply('auto'); };
+            if(mq.addEventListener) mq.addEventListener('change',onChange); else if(mq.addListener) mq.addListener(onChange);
+        }
+    })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -35,10 +65,28 @@
 
         /* Header - 반응형 */
         .hdr {
+            position: relative;
             padding: 48px 0 24px;
             border-bottom: 1px solid #e9e7e2;
             margin-bottom: 24px;
         }
+        /* 테마 선택: 자동 / 라이트 / 다크 */
+        .theme-toggle {
+            position: absolute; top: 48px; right: 0;
+            display: flex; gap: 2px;
+            background: #edece8; border-radius: 10px; padding: 3px;
+        }
+        .tbtn {
+            width: 34px; height: 32px;
+            border: none; background: transparent; border-radius: 8px;
+            color: #9b9a97; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all .25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .tbtn svg { width: 16px; height: 16px; }
+        .tbtn:hover { color: #2d2b27; }
+        .tbtn.on { background: #fff; color: #2d2b27; box-shadow: 0 1px 3px rgba(55,50,40,.1), 0 0 0 1px rgba(0,0,0,.03); }
+        .tbtn:focus-visible { outline: 2px solid #2eaadc; outline-offset: 1px; }
         .hdr-icon { font-size: 40px; margin-bottom: 8px; }
         .hdr h1 {
             font-size: 36px; font-weight: 700; color: #1a1917;
@@ -50,13 +98,20 @@
             .app { padding: 0 16px 48px; }
             /* 모바일: 아이콘을 제목 옆으로 붙여 헤더 높이 축소 */
             .hdr {
-                display: grid; grid-template-columns: auto 1fr; column-gap: 10px; align-items: center;
+                display: grid; grid-template-columns: auto 1fr auto; column-gap: 10px; align-items: center;
                 padding: 18px 0 12px; margin-bottom: 4px;
             }
             .hdr-icon { grid-row: 1 / 3; font-size: 34px; margin-bottom: 0; line-height: 1; }
-            .hdr h1 { font-size: 22px; letter-spacing: -0.5px; }
-            .hdr .sub { font-size: 12px; margin-top: 2px; }
+            .hdr h1 { grid-column: 2; grid-row: 1; font-size: 22px; letter-spacing: -0.5px; }
+            .hdr .sub { grid-column: 2 / -1; grid-row: 2; font-size: 12px; margin-top: 2px; }
+            .theme-toggle { position: static; grid-column: 3; grid-row: 1; }
+            .tbtn { width: 36px; height: 34px; }
             .hdr .cr { grid-column: 1 / -1; font-size: 11px; margin-top: 8px; line-height: 1.5; }
+        }
+        @media(max-width:340px) {
+            /* 320px 대 화면: 테마 버튼 때문에 제목이 두 줄로 꺾이지 않게 */
+            .hdr h1 { font-size: 20px; }
+            .tbtn { width: 30px; height: 32px; }
         }
 
         /* Search */
@@ -591,6 +646,70 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(0,0,0,.12); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,.2); }
+
+        /* ===== 다크 테마 =====
+           html[data-theme] 는 head 의 스크립트가 선택값(자동/라이트/다크)으로 정함.
+           라이트 규칙은 그대로 두고 색만 덮어씀 */
+        html[data-theme="dark"] body { background: #191917; color: #e6e4df; }
+        html[data-theme="dark"] body::after { opacity: .04; }
+        html[data-theme="dark"] .hdr { border-bottom-color: #2e2d2a; }
+        html[data-theme="dark"] .hdr h1 { color: #f3f1ec; }
+        html[data-theme="dark"] .hdr .sub { color: #9a978f; }
+        html[data-theme="dark"] .hdr .cr { color: #77746e; }
+        html[data-theme="dark"] .theme-toggle, html[data-theme="dark"] .view-toggle, html[data-theme="dark"] .sort-toggle { background: #262523; }
+        html[data-theme="dark"] .tbtn, html[data-theme="dark"] .vbtn, html[data-theme="dark"] .sbtn { color: #8d8a84; }
+        html[data-theme="dark"] .tbtn:hover, html[data-theme="dark"] .vbtn:hover, html[data-theme="dark"] .sbtn:hover { color: #e6e4df; }
+        html[data-theme="dark"] .tbtn.on, html[data-theme="dark"] .vbtn.on, html[data-theme="dark"] .sbtn.on { background: #3a3936; color: #f3f1ec; box-shadow: 0 1px 2px rgba(0,0,0,.4); }
+        html[data-theme="dark"] .search-wrap { background: #191917; border-bottom-color: #2a2927; }
+        html[data-theme="dark"] .search-box input { background-color: #232220; border-color: #34322f; color: #e6e4df; }
+        html[data-theme="dark"] .search-box input:focus { background-color: #262523; border-color: rgba(86,185,228,.55); box-shadow: 0 0 0 3px rgba(86,185,228,.15); }
+        html[data-theme="dark"] .search-box input::placeholder { color: #6f6c66; }
+        html[data-theme="dark"] .flabel { color: #8d8a84; }
+        html[data-theme="dark"] .fbtn { border-color: #3a3936; color: #a9a6a0; }
+        html[data-theme="dark"] .fbtn:hover { border-color: #55534f; }
+        html[data-theme="dark"] .fbtn.on { border-color: transparent; }
+        html[data-theme="dark"] .fbtn.on[data-v=""] { background: #e6e4df; color: #191917; }
+        html[data-theme="dark"] .fbtn.on[data-v="고대"], html[data-theme="dark"] .tag-ancient { background: #3d2f17; color: #e9b872; }
+        html[data-theme="dark"] .fbtn.on[data-v="현대"], html[data-theme="dark"] .tag-present { background: #1f3524; color: #85c995; }
+        html[data-theme="dark"] .fbtn.on[data-v="미래"], html[data-theme="dark"] .tag-future { background: #1b3140; color: #7fb7d9; }
+        html[data-theme="dark"] .fbtn.on[data-v="미그레이나"], html[data-theme="dark"] .tag-mig { background: #3f2a1e; color: #e3a57e; }
+        html[data-theme="dark"] .fbtn.on[data-v="가를레아"], html[data-theme="dark"] .tag-gar { background: #1d3828; color: #7fcb98; }
+        html[data-theme="dark"] .fbtn.on[data-v="기타"], html[data-theme="dark"] .tag-etc { background: #2f3133; color: #a7abaf; }
+        html[data-theme="dark"] .result-count { color: #8d8a84; }
+        html[data-theme="dark"] .result-count.flash { color: #5fb8d1; }
+        html[data-theme="dark"] .card { background: #222120; box-shadow: 0 0 0 1px #2e2d2a; }
+        html[data-theme="dark"] .card:hover { box-shadow: 0 8px 24px rgba(0,0,0,.45), 0 0 0 1px #3a3936; }
+        html[data-theme="dark"] .card-imgs, html[data-theme="dark"] .card-imgs img, html[data-theme="dark"] .modal-imgs { background: #2a2927; }
+        html[data-theme="dark"] .card-imgs img:not([src]), html[data-theme="dark"] .card-imgs img[src=""] {
+            background: linear-gradient(105deg, #2a2927 30%, #33322f 50%, #2a2927 70%); background-size: 200% 100%;
+        }
+        html[data-theme="dark"] .no-img { background: linear-gradient(180deg, #252422, #201f1d); color: #6f6c66; }
+        html[data-theme="dark"] .card-loc { color: #f3f1ec; }
+        html[data-theme="dark"] .card-dial { color: #a9a6a0; }
+        html[data-theme="dark"] .card-author { color: #6f6c66; }
+        html[data-theme="dark"] .grid.list-view { background: #222120; box-shadow: 0 0 0 1px #2e2d2a; }
+        html[data-theme="dark"] .grid.list-view .card { box-shadow: none; border-top-color: #2e2d2a; }
+        html[data-theme="dark"] .grid.list-view .card:last-child { border-bottom-color: #2e2d2a; }
+        html[data-theme="dark"] .grid.list-view .card:hover { background: #262523; }
+        html[data-theme="dark"] .grid.list-view .card:active { background: #2c2b28; }
+        html[data-theme="dark"] .grid.list-view .card-dial { color: #8d8a84; }
+        html[data-theme="dark"] .empty-state, html[data-theme="dark"] .empty-state-hint { color: #6f6c66; }
+        html[data-theme="dark"] .empty-state-msg { color: #a9a6a0; }
+        html[data-theme="dark"] .modal-bg { background: rgba(0,0,0,.66); }
+        html[data-theme="dark"] .modal { background: #222120; box-shadow: 0 24px 80px rgba(0,0,0,.5); }
+        html[data-theme="dark"] .modal-close { background: rgba(50,49,46,.92); border-color: rgba(255,255,255,.08); color: #e6e4df; }
+        html[data-theme="dark"] .modal-close:hover { background: #3a3936; }
+        html[data-theme="dark"] .modal-body .card-loc { color: #f3f1ec; }
+        html[data-theme="dark"] .modal-body .card-dial { color: #b5b2ab; }
+        html[data-theme="dark"] .modal-link { border-color: rgba(86,185,228,.4); color: #6cc3ea; }
+        html[data-theme="dark"] .modal-link:hover { background: rgba(86,185,228,.1); }
+        html[data-theme="dark"] .copied-toast { color: #6fbf8c; }
+        html[data-theme="dark"] .modal-bar { background: #222120; border-bottom-color: #2e2d2a; color: #f3f1ec; }
+        @media(max-width:700px) {
+            html[data-theme="dark"] .modal-close { background: transparent; border-color: transparent; }
+        }
+        html[data-theme="dark"] ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.14); }
+        html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.22); }
     </style>
 </head>
 <body>
@@ -598,6 +717,17 @@
     <div class="hdr">
         <div class="hdr-icon">🐱</div>
         <h1>냥도장 가이드</h1>
+        <div class="theme-toggle" role="group" aria-label="화면 테마">
+            <button class="tbtn" data-t="auto" onclick="setThemePref('auto')" title="자동 (기기 설정)" aria-label="자동 (기기 설정 따름)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor" stroke="none"/></svg>
+            </button>
+            <button class="tbtn" data-t="light" onclick="setThemePref('light')" title="라이트" aria-label="라이트">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+            </button>
+            <button class="tbtn" data-t="dark" onclick="setThemePref('dark')" title="다크" aria-label="다크">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>
+            </button>
+        </div>
         <div class="sub">아나더에덴 냥도장 전체 위치 검색 가이드</div>
         <div class="cr">- 이명진, 나무Actors, 덴기스, cheese1006, 범고래, 우어엌, 포도맛, 딩, Lucia</div>
     </div>
@@ -1117,7 +1247,18 @@ function syncFromLocation(){
     else hideModal();
 }
 
+// --- Theme buttons ---
+function syncThemeButtons(){
+    var p=getThemePref();
+    document.querySelectorAll('.tbtn').forEach(function(b){
+        var on=b.dataset.t===p;
+        b.className=on?'tbtn on':'tbtn';
+        b.setAttribute('aria-pressed', on?'true':'false');
+    });
+}
+
 if('scrollRestoration' in history) history.scrollRestoration='manual';
+syncThemeButtons();
 render();
 syncFromLocation();
 window.addEventListener('popstate', syncFromLocation);

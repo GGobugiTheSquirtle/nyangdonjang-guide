@@ -12,7 +12,7 @@
 
 ```
 nyangdonjang-guide/
-├── index.html      # SPA 전체 (1127줄)
+├── index.html      # SPA 전체 (1268줄)
 ├── images/         # WebP 스크린샷 163장 (이 중 145장이 데이터에서 참조됨)
 └── _dist/          # 파생 산출물, gitignore (아래 "파생본" 참조)
 ```
@@ -34,10 +34,14 @@ nyangdonjang-guide/
 - **모달 + 라이트박스**: 이미지 상세 보기. 라이트박스는 탭한 지점 기준 확대
 - **해시 라우팅**: `#장소명` 링크로 바로 열림. 상세창·라이트박스는 history 항목을 쌓아 뒤로가기로 닫힘
 - **링크 공유**: 터치 기기는 OS 공유 시트(Web Share API), 그 외는 클립보드 복사
+- **화면 테마**: 자동(기기 설정) / 라이트 / 다크 선택, 선택값은 localStorage 에 기억.
+  `<head>` 스크립트가 스타일보다 먼저 `html[data-theme]` 를 정해 첫 화면 깜빡임 없음.
+  라이트 선택은 `color-scheme: only light`, 다크는 `dark` 로 선언해 크롬 '웹페이지 어둡게' 강제 변환을 피함.
+  삼성 인터넷은 기본 설정에서 사이트 테마와 무관하게 자체 강제 변환을 적용함(사이트에서 막을 수 없음)
 - **모바일(≤700px)**: 상세창 전체 화면 + 이미지 세로 배치, 목록 행에 대사 표시, 필터를 시대/대륙 줄로 분리
 
 ### 디자인
-- Notion 스타일 밝은 테마 (`background: #f8f7f4`)
+- Notion 스타일 밝은 테마 (`background: #f8f7f4`) + 다크 테마 (`#191917`, `html[data-theme="dark"]` 블록에서 색만 덮어씀)
 - grain texture overlay
 - max-width: 1080px, 반응형 레이아웃
 
