@@ -12,7 +12,7 @@
 
 ```
 nyangdonjang-guide/
-├── index.html      # SPA 전체 (1078줄)
+├── index.html      # SPA 전체 (1090줄)
 ├── images/         # WebP 스크린샷 163장 (이 중 145장이 데이터에서 참조됨)
 └── _dist/          # 파생 산출물, gitignore (아래 "파생본" 참조)
 ```

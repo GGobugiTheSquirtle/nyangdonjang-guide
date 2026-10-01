@@ -36,7 +36,7 @@
         /* Header - 반응형 */
         .hdr {
             padding: 48px 0 24px;
-            border-bottom: 1px solid rgba(0,0,0,.06);
+            border-bottom: 1px solid #e9e7e2;
             margin-bottom: 24px;
         }
         .hdr-icon { font-size: 40px; margin-bottom: 8px; }
@@ -62,11 +62,10 @@
         /* Search */
         .search-wrap {
             position: sticky; top: 0; z-index: 100;
-            background: rgba(248,247,244,.88);
-            backdrop-filter: blur(16px) saturate(1.4);
-            -webkit-backdrop-filter: blur(16px) saturate(1.4);
+            /* 단색: 반투명+blur 는 브라우저 강제 다크모드에서 주변과 다른 회색 덩어리가 됨 */
+            background: #f8f7f4;
             padding: 12px 0 4px;
-            border-bottom: 1px solid rgba(0,0,0,.04);
+            border-bottom: 1px solid #ebe9e4;
         }
         .search-row {
             display: flex; gap: 8px; align-items: center;
@@ -75,8 +74,8 @@
         .search-box input {
             width: 100%;
             padding: 11px 14px 11px 40px;
-            background: rgba(0,0,0,.03);
-            border: 1px solid rgba(0,0,0,.06);
+            background: #f0efeb;
+            border: 1px solid #e4e2dc;
             border-radius: 10px;
             font-size: 14px;
             color: #2d2b27;
@@ -107,7 +106,7 @@
         /* View Toggle */
         .view-toggle {
             display: flex; gap: 2px;
-            background: rgba(0,0,0,.04);
+            background: #edece8;
             border-radius: 10px;
             padding: 3px;
             flex-shrink: 0;
@@ -133,7 +132,7 @@
         /* Sort Toggle */
         .sort-toggle {
             display: flex; gap: 2px;
-            background: rgba(0,0,0,.04);
+            background: #edece8;
             border-radius: 10px;
             padding: 3px;
             flex-shrink: 0;
@@ -157,48 +156,55 @@
             .sbtn { min-height: 44px; padding: 6px 12px; display: flex; align-items: center; }
         }
 
-        /* Filter Chips */
+        /* Filter Chips
+           그룹(시대/대륙)마다 라벨 + 같은 폭 4칸 격자 → 두 줄의 칸이 위아래로 맞음.
+           선택 = 채움 / 미선택 = 테두리만 → 브라우저 강제 다크모드에서도 구분됨 */
         .filter-row {
-            display: flex; gap: 6px; padding: 8px 0 4px;
-            flex-wrap: wrap; align-items: center;
+            display: flex; flex-wrap: wrap; align-items: center; gap: 8px 24px;
+            padding: 10px 0 8px;
         }
-        .filter-sep {
-            width: 1px; height: 20px; background: #e3e3e1;
-            margin: 0 2px; flex-shrink: 0;
+        .fgroup {
+            display: grid; grid-template-columns: 32px repeat(4, 84px);
+            align-items: center; gap: 6px;
         }
+        .flabel { font-size: 12px; font-weight: 600; color: #9b9a97; }
         .fbtn {
-            padding: 5px 14px;
-            border: 1px solid rgba(0,0,0,.08);
-            background: #fff;
-            border-radius: 20px;
+            height: 32px; min-width: 0; padding: 0 6px;
+            display: flex; align-items: center; justify-content: center;
+            border: 1px solid #dcdad4;
+            background: transparent;
+            border-radius: 16px;
             cursor: pointer;
             font-size: 12px;
             font-weight: 500;
             color: #787774;
             font-family: inherit;
             transition: all .25s cubic-bezier(0.16, 1, 0.3, 1);
-            white-space: nowrap;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
-        .fbtn:hover { border-color: rgba(0,0,0,.16); box-shadow: 0 1px 4px rgba(55,50,40,.06); }
+        .fbtn:hover { border-color: #c4c1b9; }
         .fbtn:active { transform: scale(0.96); }
         .fbtn:focus-visible { outline: 2px solid #2eaadc; outline-offset: 1px; }
-        .fbtn.on { border-color: transparent; }
-        .fbtn.on[data-v="\uace0\ub300"] { background: #fdecc8; color: #9f6b31; }
-        .fbtn.on[data-v="\ud604\ub300"] { background: #dbeddb; color: #2b6e3f; }
-        .fbtn.on[data-v="\ubbf8\ub798"] { background: #d3e5ef; color: #2e6b8a; }
-        .fbtn.on[data-v="\ubbf8\uadf8\ub808\uc774\ub098"] { background: #f5e0d0; color: #9a5c34; }
-        .fbtn.on[data-v="\uac00\ub974\ub808\uc544"] { background: #d8f0e0; color: #347a4a; }
-        .fbtn.on[data-v="\uae30\ud0c0"] { background: #ebeced; color: #6b6f72; }
-        .fgroup { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
-        .flabel { display: none; }
+        .fbtn.on { border-color: transparent; font-weight: 600; }
+        .fbtn.on[data-v=""] { background: #37352f; color: #fff; }
+        /* 주의: CSS 선택자에 JS 식 \uXXXX 이스케이프를 쓰면 매칭되지 않음 → 한글 그대로 */
+        .fbtn.on[data-v="고대"] { background: #fdecc8; color: #9f6b31; }
+        .fbtn.on[data-v="현대"] { background: #dbeddb; color: #2b6e3f; }
+        .fbtn.on[data-v="미래"] { background: #d3e5ef; color: #2e6b8a; }
+        .fbtn.on[data-v="미그레이나"] { background: #f5e0d0; color: #9a5c34; }
+        .fbtn.on[data-v="가를레아"] { background: #d8f0e0; color: #347a4a; }
+        .fbtn.on[data-v="기타"] { background: #ebeced; color: #6b6f72; }
         @media(max-width:700px) {
-            .fbtn { min-height: 36px; display: flex; align-items: center; }
-            /* 모바일: 시대/대륙을 각각 한 줄로 묶어 '전체'가 어느 그룹인지 분명하게 */
-            .filter-row { flex-direction: column; align-items: stretch; gap: 6px; padding: 10px 0 10px; }
-            .filter-sep { display: none; }
-            .fgroup { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
-            .fgroup::-webkit-scrollbar { display: none; }
-            .flabel { display: block; flex-shrink: 0; width: 30px; font-size: 12px; font-weight: 500; color: #9b9a97; }
+            .filter-row { flex-direction: column; align-items: stretch; gap: 6px; }
+            .fgroup { grid-template-columns: 30px repeat(4, minmax(0, 1fr)); }
+            .fbtn { height: 36px; font-size: 13px; padding: 0 4px; }
+        }
+        @media(max-width:380px) {
+            .fbtn { font-size: 12px; }
+        }
+        @media(max-width:340px) {
+            .fgroup { grid-template-columns: 26px repeat(4, minmax(0, 1fr)); gap: 4px; }
+            .fbtn { font-size: 11.5px; padding: 0 2px; letter-spacing: -0.3px; }
         }
 
         .result-count { font-size: 12px; color: #b4b2ad; transition: color .3s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -262,12 +268,18 @@
 
         .card-tags { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
         .tag {
+            display: inline-block;
             font-size: 11px;
+            line-height: 16px;
             padding: 3px 8px;
             border-radius: 5px;
             font-weight: 500;
             letter-spacing: 0.2px;
+            text-align: center;
         }
+        /* 고정폭: 가장 긴 값(2자 / '미그레이나' 5자)에 맞춰 행마다 태그 열이 같은 자리에 오게 */
+        .tag-e { min-width: 3.4em; }
+        .tag-c { min-width: 6.2em; }
         .tag-ancient { background: #fdecc8; color: #9f6b31; }
         .tag-present { background: #dbeddb; color: #2b6e3f; }
         .tag-future { background: #d3e5ef; color: #2e6b8a; }
@@ -306,17 +318,17 @@
             border-radius: 0;
             border-bottom: none;
             box-shadow: none;
-            border-top: 1px solid rgba(0,0,0,.04);
+            border-top: 1px solid #f0eeea;
             display: flex;
             flex-direction: row;
             align-items: stretch;
         }
         .grid.list-view .card:first-child:not(.hide) { border-radius: 12px 12px 0 0; border-top: none; }
-        .grid.list-view .card:last-child { border-bottom: 1px solid rgba(0,0,0,.04); }
+        .grid.list-view .card:last-child { border-bottom: 1px solid #f0eeea; }
         .grid.list-view .card:last-child:not(.hide) { border-radius: 0 0 12px 12px; }
         .grid.list-view .card.hide { display: none; }
-        .grid.list-view .card:hover { transform: none; box-shadow: none; background: rgba(0,0,0,.02); }
-        .grid.list-view .card:active { background: rgba(0,0,0,.04); }
+        .grid.list-view .card:hover { transform: none; box-shadow: none; background: #fbfaf8; }
+        .grid.list-view .card:active { background: #f3f2ef; }
 
         .grid.list-view .card-imgs,
         .grid.list-view .no-img { display: none; }
@@ -332,17 +344,21 @@
         .grid.list-view .card-tags {
             margin-bottom: 0;
             flex-shrink: 0;
-            min-width: 110px;
+            flex-wrap: nowrap;
         }
+        /* 장소명 열 고정폭: 가장 긴 이름(약 185px)에 맞춰 대사 열이 모든 행에서 같은 자리 */
         .grid.list-view .card-loc {
             font-size: 14px;
             font-weight: 600;
+            line-height: 22px;
             margin-bottom: 0;
-            flex-shrink: 0;
-            min-width: 160px;
+            flex: 0 0 196px;
+            min-width: 0;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
         .grid.list-view .card-dial {
             font-size: 13px;
+            line-height: 22px;
             color: #9b9a97;
             display: block;
             -webkit-line-clamp: unset;
@@ -365,16 +381,14 @@
                 grid-template-columns: minmax(0, 1fr) auto;
                 grid-template-areas: "loc tags" "dial dial";
                 align-items: center;
-                gap: 3px 10px;
-                padding: 11px 14px;
+                gap: 4px 10px;
+                padding: 12px 16px;
             }
             .grid.list-view .card-tags { grid-area: tags; margin-bottom: 0; min-width: auto; flex-wrap: nowrap; }
-            .grid.list-view .card-loc {
-                grid-area: loc; font-size: 15px; min-width: 0;
-                white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-            }
-            .grid.list-view .card-dial { grid-area: dial; font-size: 13px; }
+            .grid.list-view .card-loc { grid-area: loc; font-size: 15px; }
+            .grid.list-view .card-dial { grid-area: dial; font-size: 13px; line-height: 20px; }
             .grid.list-view .card-author { display: none; }
+            .card-body { padding: 14px 16px 16px; }
         }
 
         /* Empty State */
@@ -504,7 +518,7 @@
                 position: sticky; top: 0; z-index: 2;
                 height: 52px; padding: 0 60px 0 16px;
                 background: #fff;
-                border-bottom: 1px solid rgba(0,0,0,.06);
+                border-bottom: 1px solid #ebe9e4;
                 font-size: 15px; font-weight: 600; color: #1a1917;
             }
             .modal-bar span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
@@ -728,8 +742,6 @@ function buildFilters(){
         return wrap;
     }
     row.appendChild(group('e','시대',eras));
-    var sep=document.createElement('span'); sep.className='filter-sep';
-    row.appendChild(sep);
     row.appendChild(group('c','대륙',conts));
 }
 function toggleFilter(btn){
@@ -856,8 +868,8 @@ function render(){
 
         var tags=document.createElement('div');
         tags.className='card-tags';
-        var tagE=document.createElement('span'); tagE.className='tag tag-'+ec; tagE.textContent=d.e;
-        var tagC=document.createElement('span'); tagC.className='tag tag-'+cc; tagC.textContent=d.c;
+        var tagE=document.createElement('span'); tagE.className='tag tag-e tag-'+ec; tagE.textContent=d.e;
+        var tagC=document.createElement('span'); tagC.className='tag tag-c tag-'+cc; tagC.textContent=d.c;
         tags.appendChild(tagE); tags.appendChild(tagC);
         body.appendChild(tags);
 
@@ -933,8 +945,8 @@ function openM(i, fromHistory){
 
     var tags=document.createElement('div');
     tags.className='card-tags';
-    var tagE=document.createElement('span'); tagE.className='tag tag-'+ec; tagE.textContent=d.e;
-    var tagC=document.createElement('span'); tagC.className='tag tag-'+cc; tagC.textContent=d.c;
+    var tagE=document.createElement('span'); tagE.className='tag tag-e tag-'+ec; tagE.textContent=d.e;
+    var tagC=document.createElement('span'); tagC.className='tag tag-c tag-'+cc; tagC.textContent=d.c;
     tags.appendChild(tagE); tags.appendChild(tagC);
     body.appendChild(tags);
 
