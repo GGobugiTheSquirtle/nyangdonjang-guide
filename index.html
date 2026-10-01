@@ -47,10 +47,16 @@
         .hdr .sub { color: #8c8a85; font-size: 14px; margin-top: 6px; letter-spacing: -0.1px; }
         .hdr .cr { color: #b4b2ad; font-size: 12px; margin-top: 12px; }
         @media(max-width:700px) {
-            .hdr { padding: 32px 0 16px; }
-            .hdr-icon { font-size: 32px; }
-            .hdr h1 { font-size: 24px; letter-spacing: -0.5px; }
-            .hdr .sub { font-size: 13px; }
+            .app { padding: 0 16px 48px; }
+            /* 모바일: 아이콘을 제목 옆으로 붙여 헤더 높이 축소 */
+            .hdr {
+                display: grid; grid-template-columns: auto 1fr; column-gap: 10px; align-items: center;
+                padding: 18px 0 12px; margin-bottom: 4px;
+            }
+            .hdr-icon { grid-row: 1 / 3; font-size: 34px; margin-bottom: 0; line-height: 1; }
+            .hdr h1 { font-size: 22px; letter-spacing: -0.5px; }
+            .hdr .sub { font-size: 12px; margin-top: 2px; }
+            .hdr .cr { grid-column: 1 / -1; font-size: 11px; margin-top: 8px; line-height: 1.5; }
         }
 
         /* Search */
@@ -87,8 +93,16 @@
         }
         .search-box input::placeholder { color: #b4b2ad; }
         @media(max-width:700px) {
-            .search-box input { min-height: 44px; font-size: 15px; }
+            /* 16px 미만이면 iOS Safari 가 입력 시 화면을 확대함 */
+            .search-box input { min-height: 44px; font-size: 16px; }
         }
+
+        /* 목록 상단 바: 결과 수 + 정렬/보기 전환 */
+        .list-bar {
+            display: flex; align-items: center; justify-content: space-between; gap: 8px;
+            padding: 10px 0;
+        }
+        .list-ctrl { display: flex; gap: 8px; }
 
         /* View Toggle */
         .view-toggle {
@@ -175,11 +189,19 @@
         .fbtn.on[data-v="\ubbf8\uadf8\ub808\uc774\ub098"] { background: #f5e0d0; color: #9a5c34; }
         .fbtn.on[data-v="\uac00\ub974\ub808\uc544"] { background: #d8f0e0; color: #347a4a; }
         .fbtn.on[data-v="\uae30\ud0c0"] { background: #ebeced; color: #6b6f72; }
+        .fgroup { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+        .flabel { display: none; }
         @media(max-width:700px) {
             .fbtn { min-height: 36px; display: flex; align-items: center; }
+            /* 모바일: 시대/대륙을 각각 한 줄로 묶어 '전체'가 어느 그룹인지 분명하게 */
+            .filter-row { flex-direction: column; align-items: stretch; gap: 6px; padding: 10px 0 10px; }
+            .filter-sep { display: none; }
+            .fgroup { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+            .fgroup::-webkit-scrollbar { display: none; }
+            .flabel { display: block; flex-shrink: 0; width: 30px; font-size: 12px; font-weight: 500; color: #9b9a97; }
         }
 
-        .result-count { font-size: 12px; color: #b4b2ad; padding: 4px 0 8px; transition: color .3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .result-count { font-size: 12px; color: #b4b2ad; transition: color .3s cubic-bezier(0.16, 1, 0.3, 1); }
         .result-count.flash { color: #2e8fa8; }
 
         /* Grid (Card View) */
@@ -336,30 +358,22 @@
             flex-shrink: 0;
             white-space: nowrap;
         }
-        /* list-view 이미지 유무 표시 */
-        .list-img-dot {
-            display: none;
-            width: 8px; height: 8px;
-            border-radius: 50%;
-            background: #2eaadc;
-            flex-shrink: 0;
-            margin-right: -4px;
-        }
-        .grid.list-view .list-img-dot { display: block; }
-        .grid.list-view .list-img-dot.no { background: transparent; }
-
         @media(max-width:700px) {
+            /* 모바일 행: 1줄 = 장소명 + 태그, 2줄 = 대사 (기본 정렬이 대사순이라 대사가 보여야 순서가 읽힘) */
             .grid.list-view .card-body {
                 display: grid;
-                grid-template-columns: auto 1fr;
-                grid-template-rows: auto auto;
-                gap: 2px 10px;
-                padding: 10px 14px;
+                grid-template-columns: minmax(0, 1fr) auto;
+                grid-template-areas: "loc tags" "dial dial";
+                align-items: center;
+                gap: 3px 10px;
+                padding: 11px 14px;
             }
-            .grid.list-view .list-img-dot { grid-row: 1 / 3; align-self: center; }
-            .grid.list-view .card-tags { grid-column: 2; margin-bottom: 0; min-width: auto; }
-            .grid.list-view .card-loc { grid-column: 2; font-size: 14px; min-width: auto; }
-            .grid.list-view .card-dial { display: none; }
+            .grid.list-view .card-tags { grid-area: tags; margin-bottom: 0; min-width: auto; flex-wrap: nowrap; }
+            .grid.list-view .card-loc {
+                grid-area: loc; font-size: 15px; min-width: 0;
+                white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            }
+            .grid.list-view .card-dial { grid-area: dial; font-size: 13px; }
             .grid.list-view .card-author { display: none; }
         }
 
@@ -394,9 +408,6 @@
             padding: 48px 16px;
         }
         .modal-bg.visible { opacity: 1; }
-        @media(max-width:700px) {
-            .modal-bg.open { padding: 24px 12px; }
-        }
         .modal {
             background: #fff;
             border-radius: 16px;
@@ -453,35 +464,96 @@
         }
         .modal-body .card-author { font-size: 13px; color: #b4b4b0; margin-top: 16px; }
         .modal-link {
-            display: inline-block;
-            margin-top: 12px;
-            font-size: 12px;
-            color: #2eaadc;
-            text-decoration: none;
+            display: inline-flex; align-items: center; gap: 6px;
+            margin-top: 16px;
+            min-height: 38px; padding: 0 14px;
+            border: 1px solid rgba(46,170,220,.35);
+            border-radius: 10px;
+            background: transparent;
+            font-family: inherit;
+            font-size: 13px;
+            color: #2a8fbd;
             cursor: pointer;
+            transition: background .2s;
         }
-        .modal-link:hover { text-decoration: underline; }
+        .modal-link:hover { background: rgba(46,170,220,.06); }
+        .modal-link:focus-visible { outline: 2px solid #2eaadc; outline-offset: 1px; }
         .copied-toast {
             display: inline-block;
-            margin-left: 8px;
-            font-size: 11px;
+            margin-left: 10px;
+            font-size: 12px;
             color: #4d9c6d;
             opacity: 0;
             transition: opacity .2s;
         }
         .copied-toast.show { opacity: 1; }
 
+        .modal-bar { display: none; }
+        @media(max-width:700px) {
+            /* 모바일: 떠 있는 카드 대신 전체 화면 시트 */
+            .modal-bg.open { padding: 0; }
+            .modal {
+                /* stretch 로 늘리면 높이가 화면에 고정돼 긴 내용이 흰 배경 밖으로 넘침 → min-height 로만 채움 */
+                max-width: none; min-height: 100%;
+                border-radius: 0; box-shadow: none;
+                overflow: visible; /* hidden 이면 상단 바 sticky 가 동작하지 않음 */
+                transform: translateY(24px);
+            }
+            .modal-bar {
+                display: flex; align-items: center;
+                position: sticky; top: 0; z-index: 2;
+                height: 52px; padding: 0 60px 0 16px;
+                background: #fff;
+                border-bottom: 1px solid rgba(0,0,0,.06);
+                font-size: 15px; font-weight: 600; color: #1a1917;
+            }
+            .modal-bar span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+            /* 닫기 버튼을 상단 바 안에 두어 이미지를 가리지 않게 */
+            .modal-close {
+                top: 4px; right: 4px; width: 44px; height: 44px;
+                background: transparent; border: none; box-shadow: none;
+                backdrop-filter: none; -webkit-backdrop-filter: none;
+            }
+            /* 이미지 2장을 나란히(각 193px) 대신 세로로 전체 폭 */
+            .modal-imgs { grid-template-columns: 1fr; }
+            .modal-body { padding: 20px 16px 32px; }
+            .modal-body .card-loc { font-size: 20px; }
+            .modal-link { min-height: 44px; font-size: 14px; padding: 0 16px; }
+        }
+
         /* Lightbox */
         .lb {
             display: none; position: fixed; top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0,0,0,.88);
+            background: rgba(0,0,0,.92);
             z-index: 300;
-            justify-content: center; align-items: center;
-            cursor: pointer;
+            overflow: auto;
+            overscroll-behavior: contain;
         }
         .lb.on { display: flex; }
-        .lb img { max-width: 95%; max-height: 95%; border-radius: 8px; box-shadow: 0 16px 48px rgba(0,0,0,.5); }
+        /* margin:auto 로 가운데 정렬 — justify-content:center 는 확대 시 왼쪽이 스크롤로 닿지 않음 */
+        .lb img {
+            margin: auto; flex-shrink: 0;
+            max-width: 95%; max-height: 95%;
+            border-radius: 8px; box-shadow: 0 16px 48px rgba(0,0,0,.5);
+            cursor: zoom-in;
+        }
+        .lb img.zoom { max-width: none; max-height: none; border-radius: 0; cursor: zoom-out; }
+        .lb-close {
+            position: fixed; top: 8px; right: 8px; z-index: 301;
+            width: 44px; height: 44px; border-radius: 50%;
+            border: none; background: rgba(0,0,0,.55); color: #fff;
+            font-size: 20px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .lb-hint {
+            position: fixed; left: 0; right: 0; bottom: 14px;
+            text-align: center; font-size: 12px; color: rgba(255,255,255,.55);
+            pointer-events: none;
+        }
+        @media(max-width:700px) {
+            .lb img { max-width: 100%; border-radius: 0; }
+        }
 
         /* Scrollbar */
         ::-webkit-scrollbar { width: 7px; }
@@ -505,6 +577,13 @@
                 <label for="q" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">검색</label>
                 <input type="text" id="q" placeholder="위치명 또는 대사로 검색..." oninput="doFilter()" />
             </div>
+        </div>
+        <div class="filter-row" id="filters"></div>
+    </div>
+
+    <div class="list-bar">
+        <div class="result-count" id="rcnt" aria-live="polite"></div>
+        <div class="list-ctrl">
             <div class="sort-toggle">
                 <button class="sbtn on" id="sDial" onclick="setSort('dial')" title="대사 가나다순" aria-label="대사순 정렬" aria-pressed="true">대사순</button>
                 <button class="sbtn" id="sLoc" onclick="setSort('loc')" title="위치별 정렬" aria-label="위치순 정렬" aria-pressed="false">위치순</button>
@@ -518,8 +597,6 @@
                 </button>
             </div>
         </div>
-        <div class="filter-row" id="filters"></div>
-        <div class="result-count" id="rcnt" aria-live="polite"></div>
     </div>
 
     <div class="grid list-view" id="grid"></div>
@@ -534,7 +611,11 @@
     <button class="modal-close" onclick="closeModal()" aria-label="닫기">&#10005;</button>
     <div class="modal" id="mc"></div>
 </div>
-<div class="lb" id="lb" onclick="this.classList.remove('on')"><img id="lbi" alt="확대 이미지" /></div>
+<div class="lb" id="lb">
+    <button class="lb-close" onclick="closeLB()" aria-label="확대 이미지 닫기">&#10005;</button>
+    <img id="lbi" alt="확대 이미지" />
+    <div class="lb-hint">이미지를 탭하면 확대 · 바깥을 탭하면 닫기</div>
+</div>
 
 <script>
 const D=[
@@ -629,41 +710,27 @@ function buildFilters(){
     const row=document.getElementById('filters');
     const eras=["고대","현대","미래"];
     const conts=[...new Set(D.map(function(d){return d.c}))];
-    
-    // 시대 필터 - 전체 추가
-    var be=document.createElement('button');
-    be.className='fbtn on'; be.dataset.g='e'; be.dataset.v='';
-    be.textContent='전체'; be.setAttribute('aria-pressed','true');
-    be.onclick=function(){toggleFilter(be)};
-    row.appendChild(be);
 
-    eras.forEach(function(v){
-        var b=document.createElement('button');
-        b.className='fbtn'; b.dataset.g='e'; b.dataset.v=v;
-        b.textContent=v;
-        b.setAttribute('aria-pressed','false');
-        b.onclick=function(){toggleFilter(b)};
-        row.appendChild(b);
-    });
-    
+    // 그룹(시대/대륙)마다 '전체' + 개별 칩. 모바일에서는 그룹별로 한 줄씩 표시
+    function group(g, label, values){
+        var wrap=document.createElement('div');
+        wrap.className='fgroup';
+        var lb=document.createElement('span'); lb.className='flabel'; lb.textContent=label;
+        wrap.appendChild(lb);
+        [''].concat(values).forEach(function(v){
+            var b=document.createElement('button');
+            b.className=v===''?'fbtn on':'fbtn'; b.dataset.g=g; b.dataset.v=v;
+            b.textContent=v===''?'전체':v;
+            b.setAttribute('aria-pressed', v===''?'true':'false');
+            b.onclick=function(){toggleFilter(b)};
+            wrap.appendChild(b);
+        });
+        return wrap;
+    }
+    row.appendChild(group('e','시대',eras));
     var sep=document.createElement('span'); sep.className='filter-sep';
     row.appendChild(sep);
-    
-    // 대륙 필터 - 전체 추가
-    var bc=document.createElement('button');
-    bc.className='fbtn on'; bc.dataset.g='c'; bc.dataset.v='';
-    bc.textContent='전체'; bc.setAttribute('aria-pressed','true');
-    bc.onclick=function(){toggleFilter(bc)};
-    row.appendChild(bc);
-
-    conts.forEach(function(v){
-        var b=document.createElement('button');
-        b.className='fbtn'; b.dataset.g='c'; b.dataset.v=v;
-        b.textContent=v;
-        b.setAttribute('aria-pressed','false');
-        b.onclick=function(){toggleFilter(b)};
-        row.appendChild(b);
-    });
+    row.appendChild(group('c','대륙',conts));
 }
 function toggleFilter(btn){
     var g=btn.dataset.g, v=btn.dataset.v;
@@ -736,7 +803,14 @@ function doFilter(){
 
 // --- Slug for hash ---
 function toSlug(s){ return encodeURIComponent(s.replace(/\s+/g,'-')); }
-function fromSlug(s){ return decodeURIComponent(s).replace(/-/g,' '); }
+// 장소명에 원래 있는 '-'(예: '뱀뼈섬 - 코니움')는 공백→'-' 치환과 구분할 수 없으므로
+// 역변환하지 않고 slug 끼리 비교한다. 기존에 공유된 링크도 그대로 열린다.
+function idxFromHash(){
+    var h=location.hash.slice(1);
+    if(!h) return -1;
+    try{ h=decodeURIComponent(h); }catch(e){}
+    return D.findIndex(function(d){ return d.l.replace(/\s+/g,'-')===h; });
+}
 
 // --- Safe HTML builder helpers ---
 function esc(s){ var d=document.createElement('div'); d.textContent=s; return d.textContent; }
@@ -752,11 +826,6 @@ function render(){
         var ec=d.e==='고대'?'ancient':d.e==='현대'?'present':'future';
         var cc=d.c==='미그레이나'?'mig':d.c==='가를레아'?'gar':'etc';
         var hasImg=d.i.length>0;
-
-        // list-img-dot
-        var dot=document.createElement('span');
-        dot.className='list-img-dot'+(hasImg?'':' no');
-        card.appendChild(dot);
 
         // images or no-img
         if(hasImg){
@@ -830,12 +899,21 @@ function initLazy(){
 }
 
 // --- Modal ---
-function openM(i){
+// 상세창·확대 보기를 열 때 history 항목을 쌓아 휴대폰 뒤로가기로 닫히게 한다.
+// (replaceState 만 쓰면 뒤로가기 한 번에 사이트를 벗어남)
+var modalIdx=-1, modalTimer=null;
+function openM(i, fromHistory){
     var d=D[i];
     var ec=d.e==='고대'?'ancient':d.e==='현대'?'present':'future';
     var cc=d.c==='미그레이나'?'mig':d.c==='가를레아'?'gar':'etc';
     var mc=document.getElementById('mc');
     mc.textContent=''; // clear
+
+    // 모바일 전용 상단 바 (데스크톱에서는 CSS 로 숨김)
+    var bar=document.createElement('div'); bar.className='modal-bar';
+    var barT=document.createElement('span'); barT.textContent=d.l;
+    bar.appendChild(barT);
+    mc.appendChild(bar);
 
     if(d.i.length){
         var imgWrap=document.createElement('div');
@@ -844,7 +922,7 @@ function openM(i){
             var img=document.createElement('img');
             img.src=f;
             img.alt=d.l+' 스크린샷';
-            img.onclick=function(e){e.stopPropagation();openLB(img)};
+            img.onclick=function(e){e.stopPropagation();openLB(img.src)};
             imgWrap.appendChild(img);
         });
         mc.appendChild(imgWrap);
@@ -872,55 +950,129 @@ function openM(i){
     }
 
     var slug=toSlug(d.l);
-    var link=document.createElement('a');
+    var link=document.createElement('button');
+    link.type='button';
     link.className='modal-link';
-    link.textContent='\uD83D\uDD17 링크 복사';
-    link.onclick=function(){copyLink(slug)};
+    link.textContent=canShare()?'🔗 링크 공유':'🔗 링크 복사';
+    link.onclick=function(){shareLink(d.l, slug)};
+    body.appendChild(link);
     var toast=document.createElement('span');
     toast.className='copied-toast'; toast.id='toast'; toast.textContent='복사됨!';
-    link.appendChild(toast);
-    body.appendChild(link);
+    body.appendChild(toast);
 
     mc.appendChild(body);
 
-    history.replaceState(null,'','#'+slug);
+    if(!fromHistory) history.pushState({m:1},'','#'+slug);
+    modalIdx=i;
+    clearTimeout(modalTimer);
     var bg=document.getElementById('modal');
     bg.classList.add('open');
+    bg.scrollTop=0;
     requestAnimationFrame(function(){requestAnimationFrame(function(){bg.classList.add('visible')})});
     document.body.style.overflow='hidden';
 }
-function closeModal(){
+function hideModal(){
+    if(modalIdx<0) return;
+    modalIdx=-1;
     var bg=document.getElementById('modal');
     bg.classList.remove('visible');
-    setTimeout(function(){
+    modalTimer=setTimeout(function(){
         bg.classList.remove('open');
         document.body.style.overflow='';
     }, 200);
-    history.replaceState(null,'','#');
 }
-function copyLink(slug){
+function closeModal(){
+    if(modalIdx<0) return;
+    // 목록에서 연 경우: 쌓아둔 항목을 되돌림 → popstate 에서 닫힘
+    // 공유 링크로 바로 들어온 경우: 되돌릴 항목이 없으므로 주소만 정리
+    if(history.state && history.state.m) history.back();
+    else { history.replaceState(null,'',location.pathname+location.search); hideModal(); }
+}
+
+// --- 링크 공유 / 복사 ---
+// 터치 기기는 OS 공유 시트(카카오톡 등으로 바로 전송), 그 외는 클립보드 복사
+function canShare(){ return !!navigator.share && !!window.matchMedia && matchMedia('(pointer:coarse)').matches; }
+function shareLink(name, slug){
     var url=location.origin+location.pathname+'#'+slug;
-    navigator.clipboard.writeText(url).then(function(){
-        var t=document.getElementById('toast');
+    if(canShare()){
+        navigator.share({title:name+' - 냥도장 가이드', url:url}).catch(function(e){
+            if(!e || e.name!=='AbortError') copyText(url); // 사용자가 취소한 경우는 무시
+        });
+        return;
+    }
+    copyText(url);
+}
+function copyText(url){
+    function done(){
+        var t=document.getElementById('toast'); if(!t) return;
         t.classList.add('show');
         setTimeout(function(){t.classList.remove('show')},1500);
-    });
+    }
+    function fallback(){
+        var ta=document.createElement('textarea');
+        ta.value=url; ta.setAttribute('readonly','');
+        ta.style.position='fixed'; ta.style.opacity='0';
+        document.body.appendChild(ta); ta.select();
+        var ok=false; try{ ok=document.execCommand('copy'); }catch(e){}
+        document.body.removeChild(ta);
+        if(ok) done(); else window.prompt('아래 링크를 복사하세요', url);
+    }
+    if(navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(url).then(done, fallback);
+    else fallback();
 }
-function openLB(img){document.getElementById('lbi').src=img.src;document.getElementById('lb').classList.add('on');}
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.getElementById('lb').classList.remove('on');closeModal();}});
+
+// --- Lightbox ---
+function openLB(src){
+    var lb=document.getElementById('lb'), img=document.getElementById('lbi');
+    img.classList.remove('zoom'); img.style.width='';
+    img.src=src;
+    lb.classList.add('on');
+    lb.scrollTop=0; lb.scrollLeft=0;
+    history.pushState({lb:1},'',location.href);
+}
+function hideLB(){
+    var lb=document.getElementById('lb'), img=document.getElementById('lbi');
+    if(!lb.classList.contains('on')) return;
+    lb.classList.remove('on');
+    img.classList.remove('zoom'); img.style.width='';
+}
+function closeLB(){
+    if(history.state && history.state.lb) history.back();
+    else hideLB();
+}
+// 탭한 지점을 중심으로 확대, 다시 탭하면 원래 크기
+function toggleZoom(e){
+    var lb=document.getElementById('lb'), img=e.currentTarget;
+    if(img.classList.contains('zoom')){ img.classList.remove('zoom'); img.style.width=''; return; }
+    var r=img.getBoundingClientRect();
+    var fx=(e.clientX-r.left)/r.width, fy=(e.clientY-r.top)/r.height;
+    var w=Math.max(r.width*2, Math.min(img.naturalWidth||0, innerWidth*2.5));
+    img.classList.add('zoom'); img.style.width=w+'px';
+    lb.scrollLeft=fx*w-lb.clientWidth/2;
+    lb.scrollTop=fy*(w*r.height/r.width)-lb.clientHeight/2;
+}
+document.getElementById('lbi').addEventListener('click', toggleZoom);
+document.getElementById('lb').addEventListener('click', function(e){ if(e.target===this) closeLB(); });
+document.addEventListener('keydown',function(e){
+    if(e.key!=='Escape') return;
+    if(document.getElementById('lb').classList.contains('on')) closeLB(); else closeModal();
+});
 
 // --- Hash routing ---
-function openFromHash(){
-    var h=location.hash.slice(1);
-    if(!h) return;
-    var name=fromSlug(h);
-    var idx=D.findIndex(function(d){return d.l===name});
-    if(idx>=0) openM(idx);
+// 주소(#장소)와 history.state 로 화면 상태를 맞춘다.
+// 뒤로/앞으로가기, 주소 직접 수정, 공유 링크 진입이 모두 여기로 온다.
+function syncFromLocation(){
+    if(!(history.state && history.state.lb)) hideLB();
+    var idx=idxFromHash();
+    if(idx>=0){ if(idx!==modalIdx) openM(idx, true); }
+    else hideModal();
 }
 
+if('scrollRestoration' in history) history.scrollRestoration='manual';
 render();
-openFromHash();
-window.addEventListener('hashchange', openFromHash);
+syncFromLocation();
+window.addEventListener('popstate', syncFromLocation);
+window.addEventListener('hashchange', syncFromLocation);
 </script>
 </body>
 </html>
