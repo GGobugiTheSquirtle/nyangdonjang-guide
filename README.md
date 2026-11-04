@@ -51,7 +51,7 @@ nyangdonjang-guide/
 
 | 배포처 | 주소 | 갱신 방법 |
 |---|---|---|
-| GitHub Pages (정본 · 검색 등록) | https://nyangdonjang.github.io/ | `git push org main` 하면 자동 (조직 nyangdonjang 저장소) |
+| GitHub Pages (정본 · 검색 등록) | https://nyangdonjang.github.io/ | `git push org master:main` 하면 자동 (조직 nyangdonjang 저장소) |
 | GitHub Pages (옛 주소) | https://ggobugithesquirtle.github.io/nyangdonjang-guide/ | `git push` — 카페 옛 링크용, canonical 은 정본을 가리킴 |
 | Netlify (미러) | https://nyangdonjang-guide.netlify.app/ | `netlify deploy --prod --dir=.` **수동** |
 
